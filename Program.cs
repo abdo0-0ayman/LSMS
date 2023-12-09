@@ -36,6 +36,9 @@ namespace LSMS
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            // seed DataBase
+            AppDbInitializer.seed(app);
+
             app.Run();
         }
     }

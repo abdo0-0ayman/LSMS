@@ -8,7 +8,7 @@ namespace LSMS.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public int Hours { get; set; }
-
+        
 
         // Relation with Professors  
         public List<Professor> Professors { get; set; }
