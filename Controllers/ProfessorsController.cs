@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 namespace LSMS.Controllers
 {
@@ -31,10 +32,11 @@ namespace LSMS.Controllers
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
-            var professor = authService.Authenticate(username, password);
+            var professor = authService.AuthenticateProfessor(username, password);
 
             if (professor != null)
             {
+                authService.SignInProfessor(professor);
                 return RedirectToAction("Profile");
             }
 
@@ -42,7 +44,6 @@ namespace LSMS.Controllers
             return View();
         }
 
-        [Authorize]// Require authentication to access this action
         public IActionResult Profile()
         {
             // Retrieve the currently authenticated professor's username
@@ -54,16 +55,23 @@ namespace LSMS.Controllers
             if (loggedInProfessor != null)
             {
                 // Pass the professor model to the view
-                return View(loggedInProfessor);
+                return RedirectToAction("X", "Professors",loggedInProfessor);
             }
 
             // Handle the case where the professor is not found
             return RedirectToAction("Index", "Home");
         }
-
+        public IActionResult X(Professor professor)
+        {
+            string username = professor.SSN;
+            var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            if(loggedInProfessor != null)
+                return View(loggedInProfessor);
+            return RedirectToAction("Index", "Home");
+        }
         public IActionResult Logout()
         {
-            authService.Logout();
+            authService.SignOutProfessor();
             return RedirectToAction("Index", "Home");
         }
         public IActionResult Index()

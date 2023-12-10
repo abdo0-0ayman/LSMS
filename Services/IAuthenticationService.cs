@@ -1,10 +1,13 @@
 ﻿using LSMS.Models;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace LSMS.Services
 {
     public interface IAuthenticationService
     {
-        Professor Authenticate(string username, string password);
-        void Logout();
+        Professor AuthenticateProfessor(string username, string password);
+        public void SignInProfessor(Professor professor);
+        public void SignOutProfessor();
     }
 }
