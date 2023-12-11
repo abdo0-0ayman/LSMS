@@ -1,20 +1,21 @@
-﻿using LSMS.Models;
+﻿using LSMS.data_access;
+using LSMS.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace LSMS.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ApplicationDbContext dbContext;
+        public HomeController(ApplicationDbContext dbContext)
         {
-            _logger = logger;
+            this.dbContext = dbContext;
         }
-
         public IActionResult Index()
         {
+            
             return View();
         }
 

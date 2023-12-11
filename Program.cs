@@ -1,5 +1,10 @@
 using LSMS.data_access;
+using LSMS.Models;
+using LSMS.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace LSMS
 {
@@ -15,7 +20,18 @@ namespace LSMS
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"));
             });
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped<ApplicationDbContext>(); // Add appropriate lifetime for ApplicationDbContext
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/Home"; // Set the login path
+            });
+
             var app = builder.Build();
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -31,13 +47,14 @@ namespace LSMS
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication(); // Enable authentication middleware
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             // seed DataBase
-            AppDbInitializer.seed(app);
+            //AppDbInitializer.seed(app);
 
             app.Run();
         }

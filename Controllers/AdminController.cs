@@ -1,20 +1,20 @@
 ﻿using LSMS.data_access;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
 
 namespace LSMS.Controllers
 {
     public class AdminController : Controller
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext dbContext;
 
-        public AdminController(ApplicationDbContext context)
+        public AdminController(ApplicationDbContext dbContext)
         {
-            _context = context;
+            this.dbContext = dbContext;
         }
         public IActionResult Index()
         {
-            var data = _context.Admins.ToList();
-            return View(data);
+            return View();
         }
     }
 }
