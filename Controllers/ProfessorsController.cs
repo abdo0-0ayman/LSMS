@@ -24,12 +24,6 @@ namespace LSMS.Controllers
             this.dbContext = dbContext;
         }
 
-        public IActionResult Login()
-        {
-            return View();
-        }
-
-
         public IActionResult Profile()
         {
             // Retrieve the currently authenticated professor's username
@@ -41,23 +35,15 @@ namespace LSMS.Controllers
             if (loggedInProfessor != null)
             {
                 // Pass the professor model to the view
-                return RedirectToAction("X", "Professors",loggedInProfessor);
+                return View(loggedInProfessor);
             }
 
             // Handle the case where the professor is not found
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult X(Professor professor)
-        {
-            string username = professor.SSN;
-            var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-            if(loggedInProfessor != null)
-                return View(loggedInProfessor);
-            return RedirectToAction("Index", "Home");
-        }
         public IActionResult Logout()
         {
-            authService.SignOutProfessor();
+            authService.SignOut();
             return RedirectToAction("Index", "Home");
         }
         public IActionResult Index()

@@ -17,6 +17,19 @@ namespace LSMS.Controllers
 
         public IActionResult Index()
         {
+            string username = User.Identity.Name;
+
+            var loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
+            var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            if (loggedInStudent != null)
+            {
+                return RedirectToAction("Profile", "Student");
+            }
+            if (loggedInProfessor != null)
+            {
+                return RedirectToAction("Profile", "Professors");
+            }
+
             return View();
         }
 
@@ -24,18 +37,19 @@ namespace LSMS.Controllers
         public IActionResult Login(string username, string password)
         {
             var professor = authService.AuthenticateProfessor(username, password);
+
             var student = authService.AuthenticateStudent(username, password);
 
             if (professor != null)
             {
                 authService.SignInProfessor(professor);
-                return RedirectToAction("Profile","Professors",professor);
+                return RedirectToAction("Profile","Professors");
             }
 
             if (student != null)
             {
                 authService.SignInStudent(student);
-                return RedirectToAction("Profile","Student",student);
+                return RedirectToAction("Profile","Student");
             }
 
             ViewBag.ErrorMessage = "Invalid username or password";
@@ -70,7 +84,7 @@ namespace LSMS.Controllers
         */
         public IActionResult Logout()
         {
-            authService.SignOutProfessor();
+            authService.SignOut();
             return RedirectToAction("Index", "Home");
         }
     }

@@ -11,7 +11,6 @@ namespace LSMS.Services
 
         public void SignInProfessor(Professor professor);
         public void SignInStudent(Student student);
-        public void SignOutProfessor();
-        public void SignOutStudent();
+        public void SignOut();
     }
 }

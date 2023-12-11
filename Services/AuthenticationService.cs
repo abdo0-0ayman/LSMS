@@ -24,14 +24,7 @@ namespace LSMS.Services
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
-        /*
-        public Admin? AuthenticateProfessor(string username, string password)
-        {
-            loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.SSN == username && p.Password == password);
 
-            return loggedInAdmin;
-        }
-        */
         public Professor? AuthenticateProfessor(string username, string password)
         {
             loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username && p.Password == password);
@@ -72,12 +65,7 @@ namespace LSMS.Services
             httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
-        public void SignOutProfessor()
-        {
-            httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-        }
-
-        public void SignOutStudent()
+        public void SignOut()
         {
             httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
