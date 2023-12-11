@@ -29,7 +29,7 @@ namespace LSMS
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.LoginPath = "/Login/Login"; // Set the login path
+                options.LoginPath = "/Home/Login"; // Set the login path
                 options.SlidingExpiration = true;
                 options.Cookie.IsEssential = true;
                 options.Cookie.HttpOnly = true;
@@ -58,7 +58,7 @@ namespace LSMS
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Login}/{id?}");
 
             // seed DataBase
             AppDbInitializer.seed(app);

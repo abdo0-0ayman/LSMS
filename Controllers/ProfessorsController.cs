@@ -39,16 +39,16 @@ namespace LSMS.Controllers
             }
 
             // Handle the case where the professor is not found
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login", "Home");
         }
 
         public IActionResult Logout()
         {
             authService.SignOut();
-            return RedirectToAction("Index", "Home");
-        }
+			return RedirectToAction("Login", "Home");
+		}
 
-        public IActionResult Index()
+		public IActionResult Index()
         {
             return View();
         }

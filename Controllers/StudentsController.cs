@@ -28,17 +28,17 @@ namespace LSMS.Controllers
                 return View(loggedInStudent);
             }
 
-            // Handle the case where the professor is not found
-            return RedirectToAction("Index", "Home");
-        }
+			// Handle the case where the professor is not found
+			return RedirectToAction("Login", "Home");
+		}
 
-        public IActionResult Logout()
+		public IActionResult Logout()
         {
             authService.SignOut();
-            return RedirectToAction("Index", "Home");
-        }
+			return RedirectToAction("Login", "Home");
+		}
 
-        public IActionResult Index()
+		public IActionResult Index()
         {
             return View();
         }
