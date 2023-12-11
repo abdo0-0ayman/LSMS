@@ -9,6 +9,10 @@
 <p>Professor: @Model.SSN</p>
 <p>Professor: @Model.PhoneNumber</p>
 
+@if (User.Identity.IsAuthenticated)
+{
+    <li><a asp-controller="Login" asp-action="Logout">Logout</a></li>
+}
 
 <!-- Add other profile information as needed -->
 

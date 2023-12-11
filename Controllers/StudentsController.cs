@@ -3,16 +3,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace LSMS.Controllers
 {
-    public class StudentController : Controller
+    public class StudentsController : Controller
     {
         private readonly Services.IAuthenticationService authService;
         private readonly ApplicationDbContext dbContext;
 
-        public StudentController(Services.IAuthenticationService authService, ApplicationDbContext dbContext)
+        public StudentsController(Services.IAuthenticationService authService, ApplicationDbContext dbContext)
         {
             this.authService = authService;
             this.dbContext = dbContext;
         }
+
         public IActionResult Profile()
         {
             // Retrieve the currently authenticated professor's username
@@ -30,11 +31,13 @@ namespace LSMS.Controllers
             // Handle the case where the professor is not found
             return RedirectToAction("Index", "Home");
         }
+
         public IActionResult Logout()
         {
             authService.SignOut();
             return RedirectToAction("Index", "Home");
         }
+
         public IActionResult Index()
         {
             return View();

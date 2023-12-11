@@ -1,17 +1,17 @@
 ﻿<!-- Views/Professor/ProfileProfessor.cshtml -->
-@model Professor
+@model Admin
 
 
-<h2>Welcome to your Professor Profile</h2>
+<h2>Welcome to your Admin Profile</h2>
 
 <p>Professor: @Model.Name</p>
 
-<p>Professor: @Model.SSN</p>
-<p>Professor: @Model.PhoneNumber</p>
+<p>Professor: @Model.UserName</p>
 
 @if (User.Identity.IsAuthenticated)
 {
     <li><a asp-controller="Login" asp-action="Logout">Logout</a></li>
 }
+
 <!-- Add other profile information as needed -->
 

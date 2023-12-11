@@ -1,12 +1,12 @@
 ﻿using LSMS.data_access;
 using LSMS.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using LSMS.Services;
 namespace LSMS.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly Services.IAuthenticationService authService;
+        private readonly IAuthenticationService authService;
         private readonly ApplicationDbContext dbContext;
 
         public LoginController(Services.IAuthenticationService authService ,ApplicationDbContext dbContext)
@@ -15,30 +15,43 @@ namespace LSMS.Controllers
             this.dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
         {
             string username = User.Identity.Name;
-
-            var loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
+            // Retrieve the full professor details from the database using dbContext
             var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-            if (loggedInStudent != null)
-            {
-                return RedirectToAction("Profile", "Student");
-            }
+
             if (loggedInProfessor != null)
             {
+                // Pass the professor model to the view
                 return RedirectToAction("Profile", "Professors");
+            }
+            var loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
+
+            if (loggedInStudent != null)
+            {
+                // Pass the professor model to the view
+                return RedirectToAction("Profile", "Students");
+            }
+            var loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.UserName == username);
+
+            if (loggedInAdmin != null)
+            {
+                // Pass the professor model to the view
+                return RedirectToAction("Profile", "Admins");
             }
 
             return View();
         }
 
-        [HttpPost]
+        [HttpPost] 
         public IActionResult Login(string username, string password)
         {
             var professor = authService.AuthenticateProfessor(username, password);
 
             var student = authService.AuthenticateStudent(username, password);
+
+            var admin = authService.AuthenticateAdmin(username, password);
 
             if (professor != null)
             {
@@ -49,39 +62,18 @@ namespace LSMS.Controllers
             if (student != null)
             {
                 authService.SignInStudent(student);
-                return RedirectToAction("Profile","Student");
+                return RedirectToAction("Profile","Students");
+            }
+
+            if (admin != null)
+            {
+                authService.SignInAdmin(admin);
+                return RedirectToAction("Profile", "Admins");
             }
 
             ViewBag.ErrorMessage = "Invalid username or password";
             return View();
         }
-        /*
-        public IActionResult Profile()
-        {
-            // Retrieve the currently authenticated professor's username
-            string username = User.Identity.Name;
-
-            // Retrieve the full professor details from the database using dbContext
-            var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-
-            if (loggedInProfessor != null)
-            {
-                // Pass the professor model to the view
-                return RedirectToAction("X", "Professors", loggedInProfessor);
-            }
-
-            // Handle the case where the professor is not found
-            return RedirectToAction("Index", "Home");
-        }
-        public IActionResult X(Professor professor)
-        {
-            string username = professor.SSN;
-            var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-            if (loggedInProfessor != null)
-                return View(loggedInProfessor);
-            return RedirectToAction("Index", "Home");
-        }
-        */
         public IActionResult Logout()
         {
             authService.SignOut();

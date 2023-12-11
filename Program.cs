@@ -24,10 +24,17 @@ namespace LSMS
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ApplicationDbContext>(); // Add appropriate lifetime for ApplicationDbContext
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options =>
             {
-                options.LoginPath = "/Home"; // Set the login path
+                options.LoginPath = "/Login/Login"; // Set the login path
+                options.SlidingExpiration = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.None; // Adjust SameSite policy as needed
             });
 
             var app = builder.Build();
@@ -54,7 +61,7 @@ namespace LSMS
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             // seed DataBase
-            //AppDbInitializer.seed(app);
+            AppDbInitializer.seed(app);
 
             app.Run();
         }

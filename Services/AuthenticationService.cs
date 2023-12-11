@@ -37,6 +37,12 @@ namespace LSMS.Services
 
             return loggedInStudent;
         }
+        public Admin? AuthenticateAdmin(string username, string password)
+        {
+            loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.UserName == username && p.Password == password);
+
+            return loggedInAdmin;
+        }
         public void SignInProfessor(Professor professor)
         {
             var claims = new List<Claim>
@@ -47,7 +53,11 @@ namespace LSMS.Services
 
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
-
+            var properties = new AuthenticationProperties
+            {
+                IsPersistent = false,// or false, depending on your requirements
+                                     // Other properties...
+            };
             httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
@@ -62,9 +72,32 @@ namespace LSMS.Services
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
 
+            var properties = new AuthenticationProperties
+            {
+                IsPersistent = false,// or false, depending on your requirements
+                                     // Other properties...
+            };
             httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         }
 
+        public void SignInAdmin(Admin admin)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, admin.UserName),
+                // Add other claims as needed
+            };
+
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            var properties = new AuthenticationProperties
+            {
+                IsPersistent = false,// or false, depending on your requirements
+                                     // Other properties...
+            };
+            httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        }
         public void SignOut()
         {
             httpContextAccessor.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);

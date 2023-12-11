@@ -77,11 +77,13 @@ namespace LSMS.data_access
                         new Admin()
                         {
                             Name="Abdo Hany",
+                            UserName="abdohany",
                             Password="00000000" // 8 zeros
                         },
                         new Admin()
                         {
                             Name="Abdo Ayman",
+                            UserName="abdoayman",
                             Password="00000000"
                         }
                     });
