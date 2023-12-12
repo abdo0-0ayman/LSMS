@@ -45,7 +45,7 @@ namespace LSMS.data_access
                         new Student()
                         {
                             Name="Abdelrahman Ayman",
-                            SSN="30310152501532",
+                            SSN="30310152501531",
                             PhoneNumber="0",
                             Password="Asd159753",
                             AcademicEmail="abdulrahman.ayman632@compit.aun.edu.eg"
@@ -53,7 +53,7 @@ namespace LSMS.data_access
                         new Student()
                         {
                             Name="Abdelrahman Hany",
-                            SSN="30310162501632",
+                            SSN="30310162501631",
                             PhoneNumber="0",
                             Password="aSd159753",
                             AcademicEmail="abdulrahman.ayman633@compit.aun.edu.eg"
@@ -61,7 +61,7 @@ namespace LSMS.data_access
                         new Student()
                         {
                             Name="Abdelrahman Saad",
-                            SSN="30310172501732",
+                            SSN="30310172501731",
                             PhoneNumber="0",
                             Password="asD159753",
                             AcademicEmail="abdulrahman.ayman634@compit.aun.edu.eg"
@@ -128,19 +128,19 @@ namespace LSMS.data_access
 						},
                         new User()
                         {
-                            Username="30310182501532",
+                            Username="30310152501531",
                             Password="Asd159753",
 							Role="Students",
 						},
                         new User()
                         {
-                            Username="30310192501632",
+                            Username="30310162501631",
                             Password="aSd159753",
 							Role="Students",
 						},
                         new User()
                         {
-                            Username="30310202501732",
+                            Username="30310172501731",
                             Password="asD159753",
 							Role="Students",
 						},

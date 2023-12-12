@@ -1,0 +1,23 @@
+﻿@* @model user.identity
+
+<ul class="navbar-nav">
+    @if (User.Identity.IsAuthenticated)
+    {
+        <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @!</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="Home" class="nav-item nav-link active">Home</a>
+            <a href="About" class="nav-item nav-link">About</a>
+        </div>
+    }
+</ul>
+ *@
