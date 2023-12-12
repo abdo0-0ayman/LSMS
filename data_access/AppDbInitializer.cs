@@ -11,7 +11,104 @@ namespace LSMS.data_access
             {
                 var context=serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 context.Database.EnsureCreated();
-                if(!context.Departments.Any())
+                if (!context.Courses.Any())
+                {
+                    context.Courses.AddRange(new List<Course>()
+                    {
+                        new Course()
+                        {
+                            Id="CS-1-1",
+                            Name="Discrete Mathematics",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-1-2",
+                            Name="Programming Fundamentals",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-1-3",
+                            Name="Object Oriented Programming",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-2-1",
+                            Name="Probability And Statistics",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-2-2",
+                            Name="Visual Programming",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-2-3",
+                            Name="Software Engineering",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IT-1-1",
+                            Name="Data Communication",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IT-2-1",
+                            Name="Network Fundamentals",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IS-1-1",
+                            Name="Information System",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IS-1-2",
+                            Name="System Analysis And Design",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IS-2-1",
+                            Name="Database Basics",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IS-2-2",
+                            Name="Advanced Database",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-3-1",
+                            Name="Cloud Computing",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-3-2",
+                            Name="Machine Learning",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="CS-3-3",
+                            Name="Data Structure And Algorithms",
+                            Hours=3,
+                        }
+                    });
+                    context.SaveChanges();
+                }
+                if (!context.Departments.Any())
                 {
                     context.Departments.AddRange(new List<Department>()
                     {
@@ -185,6 +282,25 @@ namespace LSMS.data_access
                     });
                     context.SaveChanges();
 				}
+                var professors= context.Professors.ToList();
+                var courses =context.Courses.ToList();
+                var cp=new List<CourseProfessor>();
+
+                foreach(var item in professors)
+                {
+                    foreach (var course in courses)
+                    {
+                        cp.Add(new CourseProfessor()
+                        {
+                            CourseId = course.Id,
+                            ProfessorId=item.Id,
+                            Course=course,
+                            Professor=item
+                        });
+                    }
+                }
+                context.CourseProfessors.AddRange(cp);
+                context.SaveChanges();
 			}
 		}
     }

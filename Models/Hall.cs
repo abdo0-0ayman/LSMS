@@ -9,6 +9,6 @@ namespace LSMS.Models
         public string Type { get; set; }
 
         //// Relation Groups 
-        public List<CourseProfessor> CourseProfessors { get; set; }
+        //public List<CourseProfessor> CourseProfessors { get; set; }
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace LSMS.Models
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+
+namespace LSMS.Models
 {
     public class CourseProfessor
     {
@@ -13,8 +16,8 @@
         public Professor Professor { get; set; }
 
         // relation with Hall
-        public int HallId { get; set; }
-        public Hall Hall { get; set; }
+       // public int HallId { get; set; }
+       // public Hall Hall { get; set; }
 
         // Relation with Students
         public List<Student> Students { get; set; }

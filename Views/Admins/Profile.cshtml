@@ -120,7 +120,16 @@
                            </svg>
                            Generate Schedule
                     </a>
+
                 </div>
+                            <form class="login100-form validate-form flex-sb flex-w" asp-controller="DisplayCourseProfessors" asp-action="ProfessorTeachCourse" method="post">
+                                <input class="input100" type="text" name="courseId">
+                                <div class="container-login100-form-btn m-t-17">
+                                    <button class="login100-form-btn">
+                                        Show
+                                    </button>
+                                </div>
+                    </form>
             </div>
         </div>
     </div>
