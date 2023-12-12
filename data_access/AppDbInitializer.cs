@@ -1,4 +1,5 @@
 ﻿using LSMS.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace LSMS.data_access
 {
@@ -10,35 +11,69 @@ namespace LSMS.data_access
             {
                 var context=serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 context.Database.EnsureCreated();
-                if(!context.Professors.Any())
+                if(!context.Departments.Any())
                 {
-                    context.Professors.AddRange(new List<Professor>()
+                    context.Departments.AddRange(new List<Department>()
                     {
-                        new Professor()
+                        new Department()
                         {
-                            Name="Ahmed Hosny",
-                            SSN="30310152501532",
-                            PhoneNumber="0",
-                            Password="Asd159753"
-                        },
-                        new Professor()
-                        {
-                            Name="Ahmed mohamed ",
-                            SSN="30310162501632",
-                            PhoneNumber="0",
-                            Password="aSd159753"
-                        },
-                        new Professor()
-                        {
-                            Name="Ahmed abdelrahman",
-                            SSN="30310172501732",
-                            PhoneNumber="0",
-                            Password="asD159753"
+                            Id="CS",
+                            Name="Computer Science",
                         }
-                    });
+                        ,
+						new Department()
+						{
+                            Id="IS",
+							Name="Information System",
+						}
+                        ,
+						new Department()
+						{
+                            Id="IT",
+							Name="Information Technology",
+						}
+					});
                     context.SaveChanges();
                 }
-                if (!context.Students.Any())
+				var dep1 = context.Departments.FirstOrDefault(u => u.Name == "Computer Science");
+				var dep2 = context.Departments.FirstOrDefault(u => u.Name == "Information System");
+				var dep3 = context.Departments.FirstOrDefault(u => u.Name == "Information Technology");
+				if (!context.Professors.Any())
+				{
+
+					context.Professors.AddRange(new List<Professor>()
+					{
+						new Professor()
+						{
+							Name="Ahmed Hosny",
+							SSN="30310152501532",
+							PhoneNumber="0",
+							Password="Asd159753",
+                            DepartmentId=dep1.Id
+						},
+						new Professor()
+						{
+							Name="Ahmed mohamed ",
+							SSN="30310162501632",
+							PhoneNumber="0",
+							Password="aSd159753",
+							DepartmentId=dep2.Id
+
+						},
+						new Professor()
+						{
+							Name="Ahmed abdelrahman",
+							SSN="30310172501732",
+							PhoneNumber="0",
+							Password="asD159753",
+                            DepartmentId=dep3.Id
+
+						}
+					});
+
+					context.SaveChanges();
+				}
+				if (!context.Students.Any())
                 {
                     context.Students.AddRange(new List<Student>()
                     {
@@ -48,24 +83,27 @@ namespace LSMS.data_access
                             SSN="30310152501532",
                             PhoneNumber="0",
                             Password="Asd159753",
-                            AcademicEmail="abdulrahman.ayman632@compit.aun.edu.eg"
-                        },
+                            AcademicEmail="abdulrahman.ayman632@compit.aun.edu.eg",
+							DepartmentId=dep1.Id
+						},
                         new Student()
                         {
                             Name="Abdelrahman Hany",
                             SSN="30310162501632",
                             PhoneNumber="0",
                             Password="aSd159753",
-                            AcademicEmail="abdulrahman.ayman633@compit.aun.edu.eg"
-                        },
+                            AcademicEmail="abdulrahman.ayman633@compit.aun.edu.eg",
+							DepartmentId=dep2.Id
+						},
                         new Student()
                         {
                             Name="Abdelrahman Saad",
                             SSN="30310172501732",
                             PhoneNumber="0",
                             Password="asD159753",
-                            AcademicEmail="abdulrahman.ayman634@compit.aun.edu.eg"
-                        }
+                            AcademicEmail="abdulrahman.ayman634@compit.aun.edu.eg",
+							DepartmentId=dep3.Id
+						}
                     });
                     context.SaveChanges();
 
@@ -148,6 +186,6 @@ namespace LSMS.data_access
                     context.SaveChanges();
 				}
 			}
-        }
+		}
     }
 }
