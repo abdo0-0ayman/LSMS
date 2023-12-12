@@ -27,10 +27,12 @@ namespace LSMS.Controllers
             this.authService = authService;
             this.dbContext = dbContext;
         }
+
+
 		[CustomAuthorize("Admins")]
 		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-		
-        
+
+
         public IActionResult Profile()
         {
 			string username = User.Identity.Name;
@@ -100,8 +102,9 @@ namespace LSMS.Controllers
                                     PhoneNumber = reader.GetValue(2).ToString(),
                                     AcademicEmail = reader.GetValue(3).ToString(),
                                     Password = reader.GetValue(4).ToString(),
-                                    // Add other properties as needed
-                                };
+									DepartmentId = (reader.GetValue(5).ToString()),
+									// Add other properties as needed
+								};
                                 var user = new User
                                 {
                                     Username = reader.GetValue(1).ToString(),
@@ -124,5 +127,81 @@ namespace LSMS.Controllers
                 ViewBag.Message = "empty";
             return View();
         }
-    }
+
+		public IActionResult UploadExcelProfessor()
+		{
+			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> UploadExcelProfessor(IFormFile file)
+		{
+			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+			if (file != null && file.Length > 0)
+			{
+				var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads\\";
+
+				if (!Directory.Exists(uploadsFolder))
+				{
+					Directory.CreateDirectory(uploadsFolder);
+				}
+
+				// Create the complete path \\wwwroot\\Uploads\\filename
+				var filePath = Path.Combine(uploadsFolder, file.FileName);
+
+				//Copies the content of the uploaded file to the specified file path
+				using (var stream = new FileStream(filePath, FileMode.Create))
+				{
+					await file.CopyToAsync(stream);
+				} 
+				using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+				{
+					using (var reader = ExcelReaderFactory.CreateReader(stream))
+					{
+						var professors = new List<Professor>();
+						var users = new List<User>();
+						do
+						{
+							bool isHeaderSkipped = false;
+
+							while (reader.Read())
+							{
+								if (!isHeaderSkipped)
+								{
+									isHeaderSkipped = true;
+									continue;
+								}
+
+								var professor = new Professor
+								{
+									Name = reader.GetValue(0).ToString(),
+									SSN = reader.GetValue(1).ToString(),
+									PhoneNumber = reader.GetValue(2).ToString(),
+									Password = reader.GetValue(3).ToString(),
+									DepartmentId= (reader.GetValue(4).ToString()),
+									// Add other properties as needed
+								};
+								var user = new User
+								{
+									Username = reader.GetValue(1).ToString(),
+									Password = reader.GetValue(3).ToString(),
+									Role = "Professors",
+								};
+								professors.Add(professor);
+								users.Add(user);
+							}
+						} while (reader.NextResult());
+						dbContext.Professors.AddRange(professors);
+						dbContext.Users.AddRange(users);
+						await dbContext.SaveChangesAsync();
+
+						ViewBag.Message = "success";
+					}
+				}
+			}
+			else
+				ViewBag.Message = "empty";
+			return View();
+		}
+	}
 }
