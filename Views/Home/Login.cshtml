@@ -1,5 +1,8 @@
 ﻿@page
 @{
+	Layout = null;
+}
+@{
 	if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
 	{
 		<p class="text-danger">@ViewBag.ErrorMessage</p>

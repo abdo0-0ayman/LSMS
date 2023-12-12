@@ -1,9 +1,12 @@
 ﻿using LSMS.data_access;
+using LSMS.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace LSMS.Controllers
 {
-    public class StudentsController : Controller
+	[CustomAuthorize("Students")]
+	[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+	public class StudentsController : Controller
     {
         private readonly Services.IAuthenticationService authService;
         private readonly ApplicationDbContext dbContext;
@@ -13,29 +16,22 @@ namespace LSMS.Controllers
             this.authService = authService;
             this.dbContext = dbContext;
         }
+		[CustomAuthorize("Students")]
+		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Profile()
+		{
+			// Retrieve the currently authenticated professor's username
+			string username = User.Identity.Name;
 
-        public IActionResult Profile()
-        {
-            // Retrieve the currently authenticated professor's username
-            string username = User.Identity.Name;
-
-            // Retrieve the full professor details from the database using dbContext
-            var loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
-
-            if (loggedInStudent != null)
-            {
-                // Pass the professor model to the view
-                return View(loggedInStudent);
-            }
-
-			// Handle the case where the professor is not found
-			return RedirectToAction("Login", "Home");
-		}
-
-		public IActionResult Logout()
-        {
-            authService.SignOut();
-			return RedirectToAction("Login", "Home");
+			// Retrieve the full professor details from the database using dbContext
+			var loggedIn = dbContext.Students.FirstOrDefault(p => p.SSN == username);
+			if (loggedIn != null)
+			{
+				// Pass the professor model to the view
+				return View(loggedIn);
+			}
+			ViewBag.ErrorMessage = "Invalid username or password";
+			return RedirectToAction("Logout", "Home");
 		}
 
 		public IActionResult Index()

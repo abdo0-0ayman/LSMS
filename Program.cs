@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using System.Security.Claims;
 
 namespace LSMS
 {
@@ -20,6 +21,7 @@ namespace LSMS
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"));
             });
+            builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             builder.Services.AddScoped<ApplicationDbContext>(); // Add appropriate lifetime for ApplicationDbContext
@@ -35,9 +37,17 @@ namespace LSMS
                 options.Cookie.HttpOnly = true;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 options.Cookie.SameSite = SameSiteMode.None; // Adjust SameSite policy as needed
-            });
+				options.AccessDeniedPath = "/Home/Login";
+			});
 
-            var app = builder.Build();
+            builder.Services.AddAuthorization(options =>
+			{
+				options.AddPolicy("Students", policy => policy.RequireClaim(ClaimTypes.Role, "Students"));
+				options.AddPolicy("Professors", policy => policy.RequireClaim(ClaimTypes.Role, "Professors"));
+				options.AddPolicy("Admins", policy => policy.RequireClaim(ClaimTypes.Role, "Admins"));
+			});
+
+			var app = builder.Build();
 
 
             // Configure the HTTP request pipeline.
@@ -58,7 +68,7 @@ namespace LSMS
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Login}/{id?}");
+                pattern: "{controller=Home}/{action=Logout}/{id?}");
 
             // seed DataBase
             AppDbInitializer.seed(app);

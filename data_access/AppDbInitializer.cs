@@ -90,7 +90,64 @@ namespace LSMS.data_access
                     context.SaveChanges();
 
                 }
-            }
+				if (!context.Users.Any())
+				{
+                    context.Users.AddRange(new List<User>()
+                    {
+                        new User()
+                        {
+                            Username="abdohany",
+                            Password="00000000", // 8 zeros
+                            Role="Admins"
+                        },
+                        new User()
+                        {
+                            Username="abdoayman",
+                            Password="00000000",
+					        Role="Admins"
+						},
+
+                        new User()
+                        {
+                            Username="30310152501532",
+                            Password="Asd159753",
+                            Role="Professors",
+                        },
+                        new User()
+                        {
+                            Username="30310162501632",
+                            Password="aSd159753",
+						    Role="Professors",
+
+						},
+                        new User()
+                        {
+                            Username="30310172501732",
+                            Password="asD159753",
+							Role="Professors",
+						},
+                        new User()
+                        {
+                            Username="30310182501532",
+                            Password="Asd159753",
+							Role="Students",
+						},
+                        new User()
+                        {
+                            Username="30310192501632",
+                            Password="aSd159753",
+							Role="Students",
+						},
+                        new User()
+                        {
+                            Username="30310202501732",
+                            Password="asD159753",
+							Role="Students",
+						},
+                    });
+                    context.SaveChanges();
+				}
+			}
         }
     }
 }

@@ -1,86 +1,72 @@
 ﻿using LSMS.data_access;
 using LSMS.Models;
 using LSMS.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using System.Security.Claims;
 
 namespace LSMS.Controllers
 {
+
     public class HomeController : Controller
     {
-		private readonly IAuthenticationService authService;
 		private readonly ApplicationDbContext dbContext;
+		private readonly IHttpContextAccessor httpContextAccessor;
 
-		public HomeController(Services.IAuthenticationService authService, ApplicationDbContext dbContext)
+		public HomeController(IHttpContextAccessor httpContextAccessor, ApplicationDbContext dbContext)
 		{
-			this.authService = authService;
+			this.httpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
 			this.dbContext = dbContext;
 		}
 
 		public IActionResult Login()
 		{
-			string username = User.Identity.Name;
-			// Retrieve the full professor details from the database using dbContext
-			var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-
-			if (loggedInProfessor != null)
+			if (User.Identity.IsAuthenticated)
 			{
-				// Pass the professor model to the view
-				return RedirectToAction("Profile", "Professors");
+				// Redirect to the home page or another secure page
+				Console.WriteLine(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value);
+				return RedirectToAction("Profile", User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value);
 			}
-			var loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
-
-			if (loggedInStudent != null)
-			{
-				// Pass the professor model to the view
-				return RedirectToAction("Profile", "Students");
-			}
-			var loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.UserName == username);
-
-			if (loggedInAdmin != null)
-			{
-				// Pass the professor model to the view
-				return RedirectToAction("Profile", "Admins");
-			}
-
 			return View();
 		}
 
 		[HttpPost]
-		public IActionResult Login(string username, string password)
+		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+		public async Task<IActionResult> Login(string username, string password)
 		{
-			var professor = authService.AuthenticateProfessor(username, password);
-
-			var student = authService.AuthenticateStudent(username, password);
-
-			var admin = authService.AuthenticateAdmin(username, password);
-
-			if (professor != null)
+			if (User.Identity.IsAuthenticated)
 			{
-				authService.SignInProfessor(professor);
-				return RedirectToAction("Profile", "Professors");
+				// Redirect to the home page or another secure page
+				return RedirectToAction("Profile", User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value);
 			}
 
-			if (student != null)
+			var user = dbContext.Users.FirstOrDefault(p => p.Username == username && p.Password == password);
+			if (user != null)
 			{
-				authService.SignInStudent(student);
-				return RedirectToAction("Profile", "Students");
-			}
+				var claims = new List<Claim>
+				{
+					new Claim(ClaimTypes.Name, user.Username),
+					new Claim(ClaimTypes.Role, user.Role)
+					// Add other claims as needed
+				};
 
-			if (admin != null)
-			{
-				authService.SignInAdmin(admin);
-				return RedirectToAction("Profile", "Admins");
-			}
+				var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+				var principal = new ClaimsPrincipal(identity);
+				await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
+				return RedirectToAction("Profile", user.Role);
+			}
 			ViewBag.ErrorMessage = "Invalid username or password";
 			return View();
 		}
-		public IActionResult Logout()
+		public async Task<IActionResult> Logout()
 		{
-			authService.SignOut();
-			return RedirectToAction("Login", "Home");
+			await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+			return RedirectToAction("Login");
 		}
 		public IActionResult Index()
         {
@@ -98,5 +84,5 @@ namespace LSMS.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
+	}
 }

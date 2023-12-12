@@ -12,7 +12,9 @@ using System.Security.Claims;
 
 namespace LSMS.Controllers
 {
-    public class ProfessorsController : Controller
+	[CustomAuthorize("Professors")]
+	[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+	public class ProfessorsController : Controller
     {
 
         private readonly IAuthenticationService authService;
@@ -23,29 +25,20 @@ namespace LSMS.Controllers
             this.authService = authService;
             this.dbContext = dbContext;
         }
-
-        public IActionResult Profile()
-        {
-            // Retrieve the currently authenticated professor's username
-            string username = User.Identity.Name;
-
-            // Retrieve the full professor details from the database using dbContext
-            var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-
-            if (loggedInProfessor != null)
-            {
-                // Pass the professor model to the view
-                return View(loggedInProfessor);
-            }
-
-            // Handle the case where the professor is not found
-            return RedirectToAction("Login", "Home");
-        }
-
-        public IActionResult Logout()
-        {
-            authService.SignOut();
-			return RedirectToAction("Login", "Home");
+		[CustomAuthorize("Professors")]
+		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Profile()
+		{
+			string username = User.Identity.Name;
+			// Retrieve the full professor details from the database using dbContext
+			var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+			if (loggedIn != null)
+			{
+				// Pass the professor model to the view
+				return View(loggedIn);
+			}
+			ViewBag.ErrorMessage = "Invalid username or password";
+			return RedirectToAction("Logout", "Home");
 		}
 
 		public IActionResult Index()

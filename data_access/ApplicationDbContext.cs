@@ -52,5 +52,6 @@ namespace LSMS.data_access
         public DbSet<Hall> Halls { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Admin> Admins { get; set; }
+        public DbSet<User> Users { get; set; }
     }
 }
