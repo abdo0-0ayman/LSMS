@@ -11,8 +11,8 @@ namespace LSMS.Models
         
 
         // Relation with Professors  
-        public List<Professor> Professors { get; set; }
-        public List<CourseProfessor> CourseProfessors { get; set; }
+        public virtual List<Professor> Professors { get; set; }
+        public virtual List<CourseProfessor> CourseProfessors { get; set; }
 
     }
 }

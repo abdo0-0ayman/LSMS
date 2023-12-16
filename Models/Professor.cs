@@ -16,11 +16,11 @@ namespace LSMS.Models
 
         // Relation with Department
 		public string DepartmentId { get; set; }
-		public Department Department { get; set; }
+		public virtual Department Department { get; set; }
 
 		//Relation with Courses
-		public List<Course> Courses { get; set; }
-        public List<CourseProfessor> CourseProfessors { get; set; }
+		public virtual List<Course> Courses { get; set; }
+        public virtual List<CourseProfessor> CourseProfessors { get; set; }
 
 
     }

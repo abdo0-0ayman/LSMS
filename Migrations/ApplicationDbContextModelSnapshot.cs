@@ -43,7 +43,7 @@ namespace LSMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Admins");
+                    b.ToTable("Admins", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.Course", b =>
@@ -60,7 +60,7 @@ namespace LSMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.CourseProfessor", b =>
@@ -84,7 +84,7 @@ namespace LSMS.Migrations
 
                     b.HasIndex("ProfessorId");
 
-                    b.ToTable("CourseProfessors");
+                    b.ToTable("CourseProfessors", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.Department", b =>
@@ -98,7 +98,7 @@ namespace LSMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.Enrollment", b =>
@@ -113,7 +113,7 @@ namespace LSMS.Migrations
 
                     b.HasIndex("CourseProfessorId");
 
-                    b.ToTable("Enrollments");
+                    b.ToTable("Enrollments", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.Hall", b =>
@@ -133,7 +133,7 @@ namespace LSMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Halls");
+                    b.ToTable("Halls", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.Professor", b =>
@@ -168,7 +168,7 @@ namespace LSMS.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Professors");
+                    b.ToTable("Professors", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.Student", b =>
@@ -207,7 +207,7 @@ namespace LSMS.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.User", b =>
@@ -232,7 +232,7 @@ namespace LSMS.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("LSMS.Models.CourseProfessor", b =>

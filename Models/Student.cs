@@ -11,10 +11,10 @@
 
 		// Relation with Department
 		public string DepartmentId { get; set; }
-        public Department Department { get; set; }
+        public virtual Department Department { get; set; }
         //relation with CourseProfessor
-        public List<CourseProfessor> CourseProfessors { get; set; }
-        public List<Enrollment> Enrollments { get; set; }
+        public virtual List<CourseProfessor> CourseProfessors { get; set; }
+        public virtual List<Enrollment> Enrollments { get; set; }
 
     }
 }

@@ -6,9 +6,9 @@
 		public string Name { get; set; }
 
 		//Relation with Student
-		List<Student> Students { get; set; }
+		public virtual List<Student> Students { get; set; }
 
 		//Relation with Professor
-		List<Professor> Professores { get; set; }
+		public virtual List<Professor> Professores { get; set; }
 	}
 }

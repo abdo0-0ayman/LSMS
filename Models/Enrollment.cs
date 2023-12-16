@@ -2,9 +2,9 @@
 {
     public class Enrollment
     {
-        public Student Student { get; set; }
+        public virtual Student Student { get; set; }
         public int StudentId { get; set; }
-        public CourseProfessor CourseProfessor { get; set; }
+        public virtual CourseProfessor CourseProfessor { get; set; }
         public int CourseProfessorId { get; set; }
 
     }

@@ -1,0 +1,28 @@
+﻿@model List<LSMS.Models.Student>
+
+@{
+    ViewData["Title"] = "Student List";
+}
+
+<h2>Student List</h2>
+<h1>number of students : @Model.Count()</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Student ID</th>
+            <th>Student Name</th>
+            <th>Department Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var student in Model)
+        {
+            <tr>
+                <td>@student.SSN</td>
+                <td>@student.Name</td>
+                <td>@student.Department.Name</td>
+            </tr>
+        }
+    </tbody>
+</table>

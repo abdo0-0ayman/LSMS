@@ -5,7 +5,13 @@
         <p class="text-danger">@ViewBag.ErrorMessage</p>
     }
 }
-<h1>Students Enrolled in Course</h1>
+
+
+<h1>Number of Professors teach the course : @Model.Count() </h1>
+
+
+<h3>List of these Professors </h3>
+
 
 <ul>
     <a class="btn btn-primary btn-lg w-15"asp-controller="Admins" asp-action="Profile">Back</a>
