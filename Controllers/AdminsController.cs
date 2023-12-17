@@ -105,13 +105,6 @@ namespace LSMS.Controllers
 									DepartmentId = (reader.GetValue(5).ToString()),
 									// Add other properties as needed
 								};
-                                var dep1 = dbContext.Departments.FirstOrDefault(u => u.Id == student.DepartmentId);
-                                student.Department = dep1;
-                                if(dep1.Students==null)
-                                {
-                                    dep1.Students = new List<Student> { student };
-                                }
-                                else dep1.Students.Add(student);
                                 var user = new User
                                 {
                                     Username = reader.GetValue(1).ToString(),
@@ -188,14 +181,6 @@ namespace LSMS.Controllers
 									DepartmentId= (reader.GetValue(4).ToString()),
 									// Add other properties as needed
 								};
-                                var dep1 = dbContext.Departments.FirstOrDefault(u => u.Id == professor.DepartmentId);
-                                professor.Department = dep1;
-
-                                if (dep1.Professores == null)
-                                {
-                                    dep1.Professores = new List<Professor> { professor };
-                                }
-                                else dep1.Professores.Add(professor); 
                                 var user = new User
 								{
 									Username = reader.GetValue(1).ToString(),
@@ -221,9 +206,7 @@ namespace LSMS.Controllers
 
         public ActionResult StudentsEnrolled()
         {
-            var student = dbContext.Students.ToList();
-            List<Student> students = dbContext.Students.Include(s => s.Department).ToList();
-
+            List<Student> student = dbContext.Students.Include(s => s.Department).ToList();
             if (student.Count() != 0)
             {
                 return View(student);

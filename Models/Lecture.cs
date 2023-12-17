@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LSMS.Models
 {
-    public class CourseProfessor
+    public class Lecture
     {
-        public int Id;
+        public string Id;
 
         // relation with Courses
         public string CourseId { get; set; }
@@ -22,6 +22,10 @@ namespace LSMS.Models
         // Relation with Students
         public virtual List<Student> Students { get; set; }
         public virtual List<Enrollment> Enrollments { get; set; }
+        public DayOfWeek DayOfWeek { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
 
     }
 }

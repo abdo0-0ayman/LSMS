@@ -12,7 +12,7 @@ namespace LSMS.Models
 
         // Relation with Professors  
         public virtual List<Professor> Professors { get; set; }
-        public virtual List<CourseProfessor> CourseProfessors { get; set; }
+        public virtual List<Lecture> Lectures { get; set; }
 
     }
 }

@@ -15,14 +15,14 @@ namespace LSMS.data_access
             modelBuilder.Entity<Course>()
             .HasMany(p => p.Professors)
             .WithMany(p => p.Courses)
-            .UsingEntity<CourseProfessor>(
+            .UsingEntity<Lecture>(
                  j => j
                 .HasOne(j => j.Professor)
-                .WithMany(t => t.CourseProfessors)
+                .WithMany(t => t.Lectures)
                 .HasForeignKey(t => t.ProfessorId),
                 j => j
                 .HasOne(j => j.Course)
-                .WithMany(t => t.CourseProfessors)
+                .WithMany(t => t.Lectures)
                 .HasForeignKey(t => t.CourseId),
                 j =>
                 {
@@ -31,31 +31,32 @@ namespace LSMS.data_access
              );
             // CourseProfessor-Student
             modelBuilder.Entity<Student>()
-            .HasMany(p => p.CourseProfessors)
+            .HasMany(p => p.Lectures)
             .WithMany(p => p.Students)
             .UsingEntity<Enrollment>(
                  j => j
-                .HasOne(j => j.CourseProfessor)
+                .HasOne(j => j.Lecture)
                 .WithMany(t => t.Enrollments)
-                .HasForeignKey(t => t.CourseProfessorId),
+                .HasForeignKey(t => t.LectureId),
                 j => j
                 .HasOne(j => j.Student)
                 .WithMany(t => t.Enrollments)
                 .HasForeignKey(t => t.StudentId),
                 j =>
                 {
-                    j.HasKey(t => new { t.StudentId, t.CourseProfessorId });
+                    j.HasKey(t => new { t.StudentId, t.LectureId });
                 }
              );
         }
         public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
         public DbSet<Professor> Professors { get; set; }
-        public DbSet<CourseProfessor> CourseProfessors { get; set; }
+        public DbSet<Lecture> Lectures { get; set; }
         public DbSet<Hall> Halls { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
     }
 }

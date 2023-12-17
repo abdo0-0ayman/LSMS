@@ -19,7 +19,7 @@ namespace LSMS.Controllers
         [HttpPost]
 		public ActionResult ProfessorTeachCourse(string courseId)
         {
-            var course = dbContext.CourseProfessors.Where(e => e.CourseId == courseId).Select(e => e.Professor).ToList();
+            var course = dbContext.Lectures.Where(e => e.CourseId == courseId).Select(e => e.Professor).ToList();
 
             if (course.Count()!=0)
             {
