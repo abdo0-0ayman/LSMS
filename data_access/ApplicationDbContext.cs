@@ -19,7 +19,7 @@ namespace LSMS.data_access
                  j => j
                 .HasOne(j => j.Professor)
                 .WithMany(t => t.Lectures)
-                .HasForeignKey(t => t.ProfessorId),
+                .HasForeignKey(t => t.ProfessorSSN),
                 j => j
                 .HasOne(j => j.Course)
                 .WithMany(t => t.Lectures)
@@ -41,10 +41,10 @@ namespace LSMS.data_access
                 j => j
                 .HasOne(j => j.Student)
                 .WithMany(t => t.Enrollments)
-                .HasForeignKey(t => t.StudentId),
+                .HasForeignKey(t => t.StudentSSN),
                 j =>
                 {
-                    j.HasKey(t => new { t.StudentId, t.LectureId });
+                    j.HasKey(t => new { t.StudentSSN, t.LectureId });
                 }
              );
         }

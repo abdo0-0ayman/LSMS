@@ -59,7 +59,31 @@ namespace LSMS.data_access
                         },
                         new Course()
                         {
+                            Id="IT-1-2",
+                            Name="Data Communication",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IT-1-3",
+                            Name="Network Fundamentals",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
                             Id="IT-2-1",
+                            Name="Data Communication",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IT-2-2",
+                            Name="Network Fundamentals",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="IT-2-3",
                             Name="Network Fundamentals",
                             Hours=3,
                         },
@@ -77,34 +101,82 @@ namespace LSMS.data_access
                         },
                         new Course()
                         {
+                            Id="IS-1-3",
+                            Name="Information System",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
                             Id="IS-2-1",
-                            Name="Database Basics",
+                            Name="System Analysis And Design",
                             Hours=3,
                         },
                         new Course()
                         {
                             Id="IS-2-2",
-                            Name="Advanced Database",
+                            Name="Information System",
                             Hours=3,
                         },
                         new Course()
                         {
-                            Id="CS-3-1",
-                            Name="Cloud Computing",
+                            Id="IS-2-3",
+                            Name="System Analysis And Design",
                             Hours=3,
                         },
                         new Course()
                         {
-                            Id="CS-3-2",
-                            Name="Machine Learning",
+                            Id="MM-1-1",
+                            Name="Information System",
                             Hours=3,
                         },
                         new Course()
                         {
-                            Id="CS-3-3",
-                            Name="Data Structure And Algorithms",
+                            Id="MM-1-2",
+                            Name="System Analysis And Design",
                             Hours=3,
-                        }
+                        },
+                        new Course()
+                        {
+                            Id="MM-1-3",
+                            Name="Information System",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="MM-2-1",
+                            Name="System Analysis And Design",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="MM-2-2",
+                            Name="Information System",
+                            Hours=3,
+                        },
+                        new Course()
+                        {
+                            Id="MM-2-3",
+                            Name="System Analysis And Design",
+                            Hours=3,
+                        },
+                        //new Course()
+                        //{
+                        //    Id="CS-3-1",
+                        //    Name="Cloud Computing",
+                        //    Hours=3,
+                        //},
+                        //new Course()
+                        //{
+                        //    Id="CS-3-2",
+                        //    Name="Machine Learning",
+                        //    Hours=3,
+                        //},
+                        //new Course()
+                        //{
+                        //    Id="CS-3-3",
+                        //    Name="Data Structure And Algorithms",
+                        //    Hours=3,
+                        //}
                     });
                     context.SaveChanges();
                 }
@@ -129,7 +201,13 @@ namespace LSMS.data_access
                             Id="IT",
 							Name="Information Technology",
 						}
-					});
+                        ,
+                        new Department()
+                        {
+                            Id="MM",
+                            Name="Multi Media",
+                        }
+                    });
                     context.SaveChanges();
                 }
 				
@@ -172,6 +250,196 @@ namespace LSMS.data_access
                     });
                     context.SaveChanges();
 				}
+                if (!context.Lectures.Any()&&context.Professors.Any())
+                {
+                    context.Lectures.AddRange(new List<Lecture>()
+                    {
+                        new Lecture()
+                        {
+                            Id="101",
+                            CourseId="CS-1-1"
+                            ,ProfessorSSN="10000000000001"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="102",
+                            CourseId="CS-1-2"
+                            ,ProfessorSSN="10000000000001"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="103",
+                            CourseId="CS-1-3"
+                            ,ProfessorSSN="10000000000001"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="104",
+                            CourseId="CS-2-1"
+                            ,ProfessorSSN="10000000000002"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="105",
+                            CourseId="CS-2-2"
+                            ,ProfessorSSN="10000000000002"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="106",
+                            CourseId="CS-2-3"
+                            ,ProfessorSSN="10000000000002"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="107",
+                            CourseId="IS-1-1"
+                            ,ProfessorSSN="10000000000003"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="108",
+                            CourseId="IS-1-2"
+                            ,ProfessorSSN="10000000000003"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+
+                            Id="109",
+                            CourseId="IS-1-3"
+                            ,ProfessorSSN="10000000000003"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="110",
+                            CourseId="IS-2-1"
+                            ,ProfessorSSN="10000000000004"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="111",
+                            CourseId="IS-2-2"
+                            ,ProfessorSSN="10000000000004"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="112",
+                            CourseId="IS-2-3"
+                            ,ProfessorSSN="10000000000004"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="113",
+                            CourseId="IT-1-1"
+                            ,ProfessorSSN="10000000000005"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="114",
+                            CourseId="IT-1-2"
+                            ,ProfessorSSN="10000000000005"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="115",
+                            CourseId="IT-1-3"
+                            ,ProfessorSSN="10000000000005"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="116",
+                            CourseId="IT-2-1"
+                            ,ProfessorSSN="10000000000006"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="117",
+                            CourseId="IT-2-2"
+                            ,ProfessorSSN="10000000000006"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="118",
+                            CourseId="IT-2-3"
+                            ,ProfessorSSN="10000000000006"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="119",
+                            CourseId="MM-1-1"
+                            ,ProfessorSSN="10000000000007"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="120",
+                            CourseId="MM-1-2"
+                            ,ProfessorSSN="10000000000007"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+
+                            Id="121",
+                            CourseId="MM-1-3"
+                            ,ProfessorSSN="10000000000007"
+                            ,lectureNum=-1
+
+                        },new Lecture()
+                        {
+                            Id="122",
+                            CourseId="MM-2-1"
+                            ,ProfessorSSN="10000000000008"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="123",
+                            CourseId="MM-2-2"
+                            ,ProfessorSSN="10000000000008"
+                            ,lectureNum=-1
+
+                        },
+                        new Lecture()
+                        {
+                            Id="124",
+                            CourseId="MM-2-3"
+                            ,ProfessorSSN="10000000000008"
+                            ,lectureNum=-1
+
+                        },
+                    }) ;
+                    context.SaveChanges();
+                }
                 //var professors= context.Professors.ToList();
                 //var courses =context.Courses.ToList();
                 //var cp=new List<CourseProfessor>();
@@ -191,7 +459,7 @@ namespace LSMS.data_access
                 //}
                 //context.CourseProfessors.AddRange(cp);
                 //context.SaveChanges();
-			}
+            }
 		}
     }
 }

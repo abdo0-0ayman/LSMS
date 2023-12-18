@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using System.Security.Claims;
+using ExcelDataReader;
+using System.Text;
 
 
 namespace LSMS.Controllers
@@ -41,7 +43,80 @@ namespace LSMS.Controllers
 			return RedirectToAction("Logout", "Home");
 		}
 
-		public IActionResult Index()
+        public IActionResult UploadExcelStudent()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadExcelStudent(IFormFile file,string LectureId)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            if (file != null && file.Length > 0)
+            {
+                var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads\\";
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Create the complete path \\wwwroot\\Uploads\\filename
+                var filePath = Path.Combine(uploadsFolder, file.FileName);
+
+                //Copies the content of the uploaded file to the specified file path
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                int cnt = 0;
+                // 
+                using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var users = new List<User>();
+                        do
+                        {
+                            bool isHeaderSkipped = false;
+
+                            while (reader.Read())
+                            {
+                                if (reader.GetValue(0) == null) break;
+                                cnt++;
+                                Console.WriteLine(cnt);
+                                if (!isHeaderSkipped)
+                                {
+                                    isHeaderSkipped = true;
+                                    continue;
+                                }
+
+                                var student = new Student
+                                {
+                                    Name = reader.GetValue(0).ToString(),
+                                    SSN = reader.GetValue(1).ToString(),
+                                    DepartmentId = (reader.GetValue(2).ToString()),
+                                    // Add other properties as needed
+                                };
+                                var students = dbContext.Students.Find(student.SSN);
+                                if(students!=null)
+                                {
+                                    dbContext.Enrollments.Add(new Enrollment { LectureId=LectureId,StudentSSN=students.SSN });
+                                }
+                            }
+                        } while (reader.NextResult());
+                        await dbContext.SaveChangesAsync();
+
+                        ViewBag.Message = "success";
+                    }
+                }
+            }
+            else
+                ViewBag.Message = "empty";
+            return View();
+        }
+        public IActionResult Index()
         {
             return View();
         }

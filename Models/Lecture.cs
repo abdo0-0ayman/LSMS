@@ -12,7 +12,7 @@ namespace LSMS.Models
         public Course Course { get; set; }
 
         // relation with Professors 
-        public int ProfessorId { get; set; }
+        public string ProfessorSSN { get; set; }
         public virtual Professor Professor { get; set; }
 
         // relation with Hall
@@ -22,9 +22,8 @@ namespace LSMS.Models
         // Relation with Students
         public virtual List<Student> Students { get; set; }
         public virtual List<Enrollment> Enrollments { get; set; }
-        public DayOfWeek DayOfWeek { get; set; }
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public int lectureNum { get; set; }
+       
 
 
     }

@@ -187,8 +187,10 @@ namespace LSMS.Controllers
 									Password = reader.GetValue(3).ToString(),
 									Role = "Professors",
 								};
-								professors.Add(professor);
-								users.Add(user);
+                                if(dbContext.Professors.Find(professor.SSN)==null)
+								    professors.Add(professor);
+                                if (dbContext.Users.Contains(user)==false)
+                                    users.Add(user);
 							}
 						} while (reader.NextResult());
 						dbContext.Professors.AddRange(professors);
@@ -204,9 +206,30 @@ namespace LSMS.Controllers
 			return View();
 		}
 
+        public ActionResult ProfessorTeachCourse()
+        {
+            return View();
+        }
+        [HttpPost]
+        public ActionResult ProfessorTeachCourse(string courseId)
+        {
+            var course = dbContext.Lectures.Where(e => e.CourseId == courseId).Select(e => e.Professor).ToList();
+
+            if (course.Count() != 0)
+            {
+                return View(course.ToList());
+            }
+            ViewBag.ErrorMessage = "there is no course";
+            return View(course);
+        }
+        public ActionResult Lectureview()
+        {
+            var lecture = dbContext.Lectures.Include(s => s.Students).ToList();
+            return View(lecture);
+        }
         public ActionResult StudentsEnrolled()
         {
-            List<Student> student = dbContext.Students.Include(s => s.Department).ToList();
+            var student = dbContext.Students.Include(s => s.Department).ToList();
             if (student.Count() != 0)
             {
                 return View(student);

@@ -8,7 +8,7 @@ namespace LSMS.Models
         public int Capacity { get; set; }
         public string Type { get; set; }
 
-        //// Relation Groups 
-        //public List<CourseProfessor> CourseProfessors { get; set; }
+        //Relation Groups 
+        public List<Lecture> Lectures { get; set; }
     }
 }

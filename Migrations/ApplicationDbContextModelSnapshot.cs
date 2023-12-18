@@ -80,13 +80,13 @@ namespace LSMS.Migrations
 
             modelBuilder.Entity("LSMS.Models.Enrollment", b =>
                 {
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
+                    b.Property<string>("StudentSSN")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LectureId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("StudentId", "LectureId");
+                    b.HasKey("StudentSSN", "LectureId");
 
                     b.HasIndex("LectureId");
 
@@ -122,26 +122,26 @@ namespace LSMS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("DayOfWeek")
+                    b.Property<int?>("HallId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ProfessorId")
-                        .HasColumnType("int");
+                    b.Property<string>("ProfessorSSN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ScheduleId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("lectureNum")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("ProfessorId");
+                    b.HasIndex("HallId");
+
+                    b.HasIndex("ProfessorSSN");
 
                     b.HasIndex("ScheduleId");
 
@@ -150,11 +150,8 @@ namespace LSMS.Migrations
 
             modelBuilder.Entity("LSMS.Models.Professor", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("SSN")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DepartmentId")
                         .IsRequired()
@@ -172,11 +169,7 @@ namespace LSMS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SSN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("SSN");
 
                     b.HasIndex("DepartmentId");
 
@@ -195,11 +188,8 @@ namespace LSMS.Migrations
 
             modelBuilder.Entity("LSMS.Models.Student", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("SSN")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AcademicEmail")
                         .IsRequired()
@@ -221,11 +211,7 @@ namespace LSMS.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SSN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("SSN");
 
                     b.HasIndex("DepartmentId");
 
@@ -267,7 +253,7 @@ namespace LSMS.Migrations
 
                     b.HasOne("LSMS.Models.Student", "Student")
                         .WithMany("Enrollments")
-                        .HasForeignKey("StudentId")
+                        .HasForeignKey("StudentSSN")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -284,9 +270,13 @@ namespace LSMS.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("LSMS.Models.Hall", null)
+                        .WithMany("Lectures")
+                        .HasForeignKey("HallId");
+
                     b.HasOne("LSMS.Models.Professor", "Professor")
                         .WithMany("Lectures")
-                        .HasForeignKey("ProfessorId")
+                        .HasForeignKey("ProfessorSSN")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -331,6 +321,11 @@ namespace LSMS.Migrations
                     b.Navigation("Professores");
 
                     b.Navigation("Students");
+                });
+
+            modelBuilder.Entity("LSMS.Models.Hall", b =>
+                {
+                    b.Navigation("Lectures");
                 });
 
             modelBuilder.Entity("LSMS.Models.Lecture", b =>
