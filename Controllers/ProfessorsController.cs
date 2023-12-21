@@ -21,6 +21,7 @@ namespace LSMS.Controllers
 
         private readonly IAuthenticationService authService;
         private readonly ApplicationDbContext dbContext;
+        private  List<Course> Courses;
 
         public ProfessorsController(Services.IAuthenticationService authService, ApplicationDbContext dbContext)
         {
@@ -42,10 +43,44 @@ namespace LSMS.Controllers
 			ViewBag.ErrorMessage = "Invalid username or password";
 			return RedirectToAction("Logout", "Home");
 		}
+        public IActionResult SelectCourses()
+        {
+            string username = User.Identity.Name;
+            // Retrieve the full professor details from the database using dbContext
+            var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var courses = dbContext.Courses.ToList();
+            ViewBag.Courses = courses;
+            return View(loggedIn);
+        }
+
+
+        [HttpPost]
+        public IActionResult SelectCourses(string professorSSN, List<string> selectedCourses)
+        {
+            Professor professor = dbContext.Professors.FirstOrDefault(p=>p.SSN == professorSSN);
+            int cnt = 100+dbContext.Lectures.Count();
+            foreach(var courses in selectedCourses)
+            {
+                cnt++;
+                Lecture lecture=new Lecture();
+                lecture.ProfessorSSN=professorSSN;
+                lecture.CourseId = courses;
+                string id=cnt.ToString();
+                lecture.Id = id;
+                dbContext.Lectures.Add(lecture);
+            }
+            dbContext.SaveChanges();
+
+            return RedirectToAction("Profile");
+        }
 
         public IActionResult UploadExcelStudent()
         {
-            return View();
+            string username = User.Identity.Name;
+            // Retrieve the full professor details from the database using dbContext
+            var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var lecture = dbContext.Lectures.Where(p => p.ProfessorSSN == loggedIn.SSN).Include(p=>p.Course).ToList();
+            return View(lecture);
         }
 
         [HttpPost]

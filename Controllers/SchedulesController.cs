@@ -21,8 +21,15 @@ namespace LSMS.Controllers
         {
             // Call your schedule generation logic
             init();
-            lectures = _context.Lectures.Include(s => s.Students).Include(s=>s.Professor).ToList();
+            lectures = _context.Lectures.Include(s => s.Students).Include(s => s.Professor).ToList();
+            foreach (var lecture in lectures)
+            {
+                lecture.lectureNum = -1;
+                _context.Entry(lecture).State = EntityState.Modified;
+            }
+
             GenerateLectureSchedule(0);
+
             foreach(var lecture in lectures)
             {
                 _context.Entry(lecture).State = EntityState.Modified;
@@ -31,6 +38,7 @@ namespace LSMS.Controllers
 
             return RedirectToAction("profile", "Admins"); // Redirect to the home page or another appropriate view
         }
+
         bool found= false;
         int num_of_halls=2;
         int num_of_lecures=6;
@@ -55,7 +63,7 @@ namespace LSMS.Controllers
             }
             foreach (var st in lectures[idx].Students)
             {
-                foreach(var ti in st.Lectures)
+                foreach (var ti in st.Lectures)
                 {
                     if (ti.lectureNum != -1)
                         grid[ti.lectureNum] = num_of_halls;
@@ -64,10 +72,10 @@ namespace LSMS.Controllers
             var prof = lectures[idx].Professor;
             foreach (var ti in prof.Lectures)
             {
-                if(ti.lectureNum!=-1)
+                if (ti.lectureNum != -1)
                     grid[ti.lectureNum] = num_of_halls;
             }
-            foreach(var ha in cur_halls)
+            foreach (var ha in cur_halls)
             {
                 foreach(var ti in ha)
                 {

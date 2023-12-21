@@ -111,8 +111,10 @@ namespace LSMS.Controllers
                                     Password = reader.GetValue(4).ToString(),
                                     Role = "Students",
                                 };
-                                students.Add(student);
-                                users.Add(user);
+                                if (dbContext.Students.Contains(student) == false)
+                                    students.Add(student);
+                                if (dbContext.Users.Contains(user)==false)
+                                    users.Add(user);
                             }
                         } while (reader.NextResult());
                         dbContext.Students.AddRange(students);
@@ -187,11 +189,11 @@ namespace LSMS.Controllers
 									Password = reader.GetValue(3).ToString(),
 									Role = "Professors",
 								};
-                                if(dbContext.Professors.Find(professor.SSN)==null)
-								    professors.Add(professor);
-                                if (dbContext.Users.Contains(user)==false)
+                                if (dbContext.Professors.Contains(professor) == false)
+                                    professors.Add(professor);
+                                if (dbContext.Users.Contains(user) == false)
                                     users.Add(user);
-							}
+                            }
 						} while (reader.NextResult());
 						dbContext.Professors.AddRange(professors);
 						dbContext.Users.AddRange(users);

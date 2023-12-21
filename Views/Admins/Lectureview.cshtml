@@ -14,11 +14,26 @@
     <a class="btn btn-primary btn-lg w-15" asp-controller="Admins" asp-action="Profile">Back</a>
     @foreach (var lec in Model)
     {
+
         <li>@lec.Id : @lec.CourseId</li>
-        <li>the student in this lecture</li>
-        foreach(var st in lec.Students)
-        {
-            <li>@st.Name</li>
-        }
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Student Name</th>
+                    <th>Department Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var student in lec.Students)
+                {
+                    <tr>
+                        <td>@student.Name</td>
+                        <td>@student.DepartmentId</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     }
 </ul>
