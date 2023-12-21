@@ -8,19 +8,19 @@ namespace LSMS.Models
         [Display(Name = "SSN")]
         public string SSN { get; set; }
         [Display(Name="Full Name")]
-        public string Name { get; set; }
+        public string name { get; set; }
        
         [Display(Name = "Phone Number")]
-        public string PhoneNumber { get; set; }
-        public string Password { get; set; }
+        public string phoneNumber { get; set; }
+        public string password { get; set; }
 
         // Relation with Department
-		public string DepartmentId { get; set; }
-		public virtual Department Department { get; set; }
+		public string departmentId { get; set; }
+		public virtual Department department { get; set; }
 
 		//Relation with Courses
-		public virtual List<Course> Courses { get; set; }
-        public virtual List<Lecture> Lectures { get; set; }
+		public virtual List<Course> courses { get; set; }
+        public virtual List<Lecture> lectures { get; set; }
 
 
     }

@@ -19,67 +19,95 @@ namespace LSMS.Controllers
 	public class ProfessorsController : Controller
     {
 
-        private readonly IAuthenticationService authService;
-        private readonly ApplicationDbContext dbContext;
-        private  List<Course> Courses;
+        private readonly IAuthenticationService _authService;
+        private readonly ApplicationDbContext _dbContext;
 
-        public ProfessorsController(Services.IAuthenticationService authService, ApplicationDbContext dbContext)
+        public ProfessorsController(IAuthenticationService authService, ApplicationDbContext dbContext)
         {
-            this.authService = authService;
-            this.dbContext = dbContext;
+            _authService = authService ?? throw new ArgumentNullException(nameof(authService));
+            _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
-		[CustomAuthorize("Professors")]
-		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-		public IActionResult Profile()
-		{
-			string username = User.Identity.Name;
-			// Retrieve the full professor details from the database using dbContext
-			var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-			if (loggedIn != null)
-			{
-				// Pass the professor model to the view
-				return View(loggedIn);
-			}
-			ViewBag.ErrorMessage = "Invalid username or password";
-			return RedirectToAction("Logout", "Home");
-		}
+
+        [CustomAuthorize("Professors")]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Profile()
+        {
+            string username = User.Identity.Name;
+            try
+            {
+                var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+
+                if (loggedIn != null)
+                {
+                    return View(loggedIn);
+                }
+
+                ViewBag.ErrorMessage = "Professor not found";
+                return RedirectToAction("Logout", "Home");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                ViewBag.ErrorMessage = "An error occurred while processing the request";
+                return RedirectToAction("Logout", "Home");
+            }
+        }
+
         public IActionResult SelectCourses()
         {
             string username = User.Identity.Name;
-            // Retrieve the full professor details from the database using dbContext
-            var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-            var courses = dbContext.Courses.ToList();
+            var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var courses = _dbContext.Courses.ToList();
             ViewBag.Courses = courses;
             return View(loggedIn);
         }
 
-
         [HttpPost]
         public IActionResult SelectCourses(string professorSSN, List<string> selectedCourses)
         {
-            Professor professor = dbContext.Professors.FirstOrDefault(p=>p.SSN == professorSSN);
-            int cnt = 100+dbContext.Lectures.Count();
-            foreach(var courses in selectedCourses)
+            try
             {
-                cnt++;
-                Lecture lecture=new Lecture();
-                lecture.ProfessorSSN=professorSSN;
-                lecture.CourseId = courses;
-                string id=cnt.ToString();
-                lecture.Id = id;
-                dbContext.Lectures.Add(lecture);
-            }
-            dbContext.SaveChanges();
+                Professor professor = _dbContext.Professors.FirstOrDefault(p => p.SSN == professorSSN);
 
-            return RedirectToAction("Profile");
+                if (professor != null && selectedCourses != null && selectedCourses.Any())
+                {
+                    int count = 100 + _dbContext.Lectures.Count();
+
+                    foreach (var course in selectedCourses)
+                    {
+                        count++;
+                        Lecture lecture = new Lecture
+                        {
+                            professorSSN = professorSSN,
+                            courseId = course,
+                            id = count.ToString()
+                        };
+                        _dbContext.Lectures.Add(lecture);
+                    }
+
+                    _dbContext.SaveChanges();
+
+                    return RedirectToAction("Profile");
+                }
+
+                ViewBag.ErrorMessage = "Invalid professor or selected courses";
+                return RedirectToAction("Logout", "Home");
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                ViewBag.ErrorMessage = "An error occurred while processing the request";
+                return RedirectToAction("Logout", "Home");
+            }
         }
+
 
         public IActionResult UploadExcelStudent()
         {
             string username = User.Identity.Name;
             // Retrieve the full professor details from the database using dbContext
-            var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-            var lecture = dbContext.Lectures.Where(p => p.ProfessorSSN == loggedIn.SSN).Include(p=>p.Course).ToList();
+            var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var lecture = _dbContext.Lectures.Where(p => p.professorSSN == loggedIn.SSN).Include(p=>p.course).ToList();
             return View(lecture);
         }
 
@@ -129,19 +157,19 @@ namespace LSMS.Controllers
 
                                 var student = new Student
                                 {
-                                    Name = reader.GetValue(0).ToString(),
+                                    name = reader.GetValue(0).ToString(),
                                     SSN = reader.GetValue(1).ToString(),
-                                    DepartmentId = (reader.GetValue(2).ToString()),
+                                    departmentId = (reader.GetValue(2).ToString()),
                                     // Add other properties as needed
                                 };
-                                var students = dbContext.Students.Find(student.SSN);
+                                var students = _dbContext.Students.Find(student.SSN);
                                 if(students!=null)
                                 {
-                                    dbContext.Enrollments.Add(new Enrollment { LectureId=LectureId,StudentSSN=students.SSN });
+                                    _dbContext.Enrollments.Add(new Enrollment { lectureId=LectureId,studentSSN=students.SSN });
                                 }
                             }
                         } while (reader.NextResult());
-                        await dbContext.SaveChangesAsync();
+                        await _dbContext.SaveChangesAsync();
 
                         ViewBag.Message = "success";
                     }

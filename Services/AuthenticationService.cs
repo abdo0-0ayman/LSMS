@@ -27,19 +27,19 @@ namespace LSMS.Services
 
         public Professor? AuthenticateProfessor(string username, string password)
         {
-            loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username && p.Password == password);
+            loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username && p.password == password);
 
             return loggedInProfessor;
         }
         public Student? AuthenticateStudent(string username, string password)
         {
-            loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username && p.Password == password);
+            loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username && p.password == password);
 
             return loggedInStudent;
         }
         public Admin? AuthenticateAdmin(string username, string password)
         {
-            loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.UserName == username && p.Password == password);
+            loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.userName == username && p.password == password);
 
             return loggedInAdmin;
         }
@@ -84,7 +84,7 @@ namespace LSMS.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, admin.UserName),
+                new Claim(ClaimTypes.Name, admin.userName),
                 // Add other claims as needed
             };
 

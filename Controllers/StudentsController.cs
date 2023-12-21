@@ -20,17 +20,17 @@ namespace LSMS.Controllers
 		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Profile()
 		{
-			// Retrieve the currently authenticated professor's username
-			string username = User.Identity.Name;
+			// Retrieve the currently authenticated professor's userName
+			string userName = User.Identity.Name;
 
 			// Retrieve the full professor details from the database using dbContext
-			var loggedIn = dbContext.Students.FirstOrDefault(p => p.SSN == username);
+			var loggedIn = dbContext.Students.FirstOrDefault(p => p.SSN == userName);
 			if (loggedIn != null)
 			{
 				// Pass the professor model to the view
 				return View(loggedIn);
 			}
-			ViewBag.ErrorMessage = "Invalid username or password";
+			ViewBag.ErrorMessage = "Invalid userName or password";
 			return RedirectToAction("Logout", "Home");
 		}
 

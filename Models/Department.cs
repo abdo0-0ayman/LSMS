@@ -2,13 +2,13 @@
 {
 	public class Department
 	{
-		public string Id { get; set; }
-		public string Name { get; set; }
+		public string id { get; set; }
+		public string name { get; set; }
 
 		//Relation with Student
-		public virtual List<Student> Students { get; set; }
+		public virtual List<Student> students { get; set; }
 
 		//Relation with Professor
-		public virtual List<Professor> Professores { get; set; }
+		public virtual List<Professor> professores { get; set; }
 	}
 }

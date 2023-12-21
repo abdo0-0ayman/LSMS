@@ -15,7 +15,7 @@
     @foreach (var lec in Model)
     {
 
-        <li>@lec.Id : @lec.CourseId</li>
+        <li>@lec.id : @lec.courseId</li>
 
         <table class="table">
             <thead>
@@ -26,11 +26,11 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var student in lec.Students)
+                @foreach (var student in lec.students)
                 {
                     <tr>
-                        <td>@student.Name</td>
-                        <td>@student.DepartmentId</td>
+                        <td>@student.name</td>
+                        <td>@student.departmentId</td>
                     </tr>
                 }
             </tbody>

@@ -5,23 +5,23 @@ namespace LSMS.Models
 {
     public class Lecture
     {
-        public string Id;
+        public string id;
 
         // relation with Courses
-        public string CourseId { get; set; }
-        public Course Course { get; set; }
+        public string courseId { get; set; }
+        public Course course { get; set; }
 
         // relation with Professors 
-        public string ProfessorSSN { get; set; }
-        public virtual Professor Professor { get; set; }
+        public string professorSSN { get; set; }
+        public virtual Professor professor { get; set; }
 
         // relation with Hall
-       // public int HallId { get; set; }
-       // public Hall Hall { get; set; }
+        public int? hallId { get; set; }
+        public Hall hall { get; set; }
 
         // Relation with Students
-        public virtual List<Student> Students { get; set; }
-        public virtual List<Enrollment> Enrollments { get; set; }
+        public virtual List<Student> students { get; set; }
+        public virtual List<Enrollment> enrollments { get; set; }
         public int lectureNum { get; set; }
        
 

@@ -44,13 +44,13 @@ namespace LSMS.Controllers
 				return RedirectToAction("Profile", User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value);
 			}
 
-			var user = dbContext.Users.FirstOrDefault(p => p.Username == username && p.Password == password);
+			var user = dbContext.Users.FirstOrDefault(p => p.userName == username && p.password == password);
 			if (user != null)
 			{
 				var claims = new List<Claim>
 				{
-					new Claim(ClaimTypes.Name, user.Username),
-					new Claim(ClaimTypes.Role, user.Role)
+					new Claim(ClaimTypes.Name, user.userName),
+					new Claim(ClaimTypes.Role, user.role)
 					// Add other claims as needed
 				};
 
@@ -58,7 +58,7 @@ namespace LSMS.Controllers
 				var principal = new ClaimsPrincipal(identity);
 				await httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-				return RedirectToAction("Profile", user.Role);
+				return RedirectToAction("Profile", user.role);
 			}
 			ViewBag.ErrorMessage = "Invalid username or password";
 			return View();

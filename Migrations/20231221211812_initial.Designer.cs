@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LSMS.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231217152732_initial")]
+    [Migration("20231221211812_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -27,126 +27,117 @@ namespace LSMS.Migrations
 
             modelBuilder.Entity("LSMS.Models.Admin", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("userName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Admins");
                 });
 
             modelBuilder.Entity("LSMS.Models.Course", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("Hours")
+                    b.Property<int>("hours")
                         .HasColumnType("int");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("LSMS.Models.Department", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Departments");
                 });
 
             modelBuilder.Entity("LSMS.Models.Enrollment", b =>
                 {
-                    b.Property<string>("StudentSSN")
+                    b.Property<string>("studentSSN")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("LectureId")
+                    b.Property<string>("lectureId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("StudentSSN", "LectureId");
+                    b.HasKey("studentSSN", "lectureId");
 
-                    b.HasIndex("LectureId");
+                    b.HasIndex("lectureId");
 
                     b.ToTable("Enrollments");
                 });
 
             modelBuilder.Entity("LSMS.Models.Hall", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<int>("Capacity")
+                    b.Property<int>("capacity")
                         .HasColumnType("int");
 
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Halls");
                 });
 
             modelBuilder.Entity("LSMS.Models.Lecture", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("id")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("CourseId")
+                    b.Property<string>("courseId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int?>("HallId")
+                    b.Property<int?>("hallId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProfessorSSN")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ScheduleId")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("lectureNum")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.Property<string>("professorSSN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("CourseId");
+                    b.HasKey("id");
 
-                    b.HasIndex("HallId");
+                    b.HasIndex("courseId");
 
-                    b.HasIndex("ProfessorSSN");
+                    b.HasIndex("hallId");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("professorSSN");
 
                     b.ToTable("Lectures");
                 });
@@ -156,37 +147,27 @@ namespace LSMS.Migrations
                     b.Property<string>("SSN")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("DepartmentId")
+                    b.Property<string>("departmentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("phoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SSN");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("departmentId");
 
                     b.ToTable("Professors");
-                });
-
-            modelBuilder.Entity("LSMS.Models.Schedule", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Schedules");
                 });
 
             modelBuilder.Entity("LSMS.Models.Student", b =>
@@ -194,161 +175,154 @@ namespace LSMS.Migrations
                     b.Property<string>("SSN")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AcademicEmail")
+                    b.Property<string>("academicEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("DepartmentId")
+                    b.Property<string>("departmentId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PhoneNumber")
+                    b.Property<string>("phoneNumber")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("SSN");
 
-                    b.HasIndex("DepartmentId");
+                    b.HasIndex("departmentId");
 
                     b.ToTable("Students");
                 });
 
             modelBuilder.Entity("LSMS.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Password")
+                    b.Property<string>("password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
+                    b.Property<string>("role")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("userName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("id");
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("LSMS.Models.Enrollment", b =>
                 {
-                    b.HasOne("LSMS.Models.Lecture", "Lecture")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("LectureId")
+                    b.HasOne("LSMS.Models.Lecture", "lecture")
+                        .WithMany("enrollments")
+                        .HasForeignKey("lectureId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LSMS.Models.Student", "Student")
-                        .WithMany("Enrollments")
-                        .HasForeignKey("StudentSSN")
+                    b.HasOne("LSMS.Models.Student", "student")
+                        .WithMany("enrollments")
+                        .HasForeignKey("studentSSN")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Lecture");
+                    b.Navigation("lecture");
 
-                    b.Navigation("Student");
+                    b.Navigation("student");
                 });
 
             modelBuilder.Entity("LSMS.Models.Lecture", b =>
                 {
-                    b.HasOne("LSMS.Models.Course", "Course")
-                        .WithMany("Lectures")
-                        .HasForeignKey("CourseId")
+                    b.HasOne("LSMS.Models.Course", "course")
+                        .WithMany("lectures")
+                        .HasForeignKey("courseId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LSMS.Models.Hall", null)
-                        .WithMany("Lectures")
-                        .HasForeignKey("HallId");
+                    b.HasOne("LSMS.Models.Hall", "hall")
+                        .WithMany("lectures")
+                        .HasForeignKey("hallId");
 
-                    b.HasOne("LSMS.Models.Professor", "Professor")
-                        .WithMany("Lectures")
-                        .HasForeignKey("ProfessorSSN")
+                    b.HasOne("LSMS.Models.Professor", "professor")
+                        .WithMany("lectures")
+                        .HasForeignKey("professorSSN")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("LSMS.Models.Schedule", null)
-                        .WithMany("Lectures")
-                        .HasForeignKey("ScheduleId");
+                    b.Navigation("course");
 
-                    b.Navigation("Course");
+                    b.Navigation("hall");
 
-                    b.Navigation("Professor");
+                    b.Navigation("professor");
                 });
 
             modelBuilder.Entity("LSMS.Models.Professor", b =>
                 {
-                    b.HasOne("LSMS.Models.Department", "Department")
-                        .WithMany("Professores")
-                        .HasForeignKey("DepartmentId")
+                    b.HasOne("LSMS.Models.Department", "department")
+                        .WithMany("professores")
+                        .HasForeignKey("departmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Department");
+                    b.Navigation("department");
                 });
 
             modelBuilder.Entity("LSMS.Models.Student", b =>
                 {
-                    b.HasOne("LSMS.Models.Department", "Department")
-                        .WithMany("Students")
-                        .HasForeignKey("DepartmentId")
+                    b.HasOne("LSMS.Models.Department", "department")
+                        .WithMany("students")
+                        .HasForeignKey("departmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Department");
+                    b.Navigation("department");
                 });
 
             modelBuilder.Entity("LSMS.Models.Course", b =>
                 {
-                    b.Navigation("Lectures");
+                    b.Navigation("lectures");
                 });
 
             modelBuilder.Entity("LSMS.Models.Department", b =>
                 {
-                    b.Navigation("Professores");
+                    b.Navigation("professores");
 
-                    b.Navigation("Students");
+                    b.Navigation("students");
                 });
 
             modelBuilder.Entity("LSMS.Models.Hall", b =>
                 {
-                    b.Navigation("Lectures");
+                    b.Navigation("lectures");
                 });
 
             modelBuilder.Entity("LSMS.Models.Lecture", b =>
                 {
-                    b.Navigation("Enrollments");
+                    b.Navigation("enrollments");
                 });
 
             modelBuilder.Entity("LSMS.Models.Professor", b =>
                 {
-                    b.Navigation("Lectures");
-                });
-
-            modelBuilder.Entity("LSMS.Models.Schedule", b =>
-                {
-                    b.Navigation("Lectures");
+                    b.Navigation("lectures");
                 });
 
             modelBuilder.Entity("LSMS.Models.Student", b =>
                 {
-                    b.Navigation("Enrollments");
+                    b.Navigation("enrollments");
                 });
 #pragma warning restore 612, 618
         }

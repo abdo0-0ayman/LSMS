@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Text;
 using ExcelDataReader;
 using System.Diagnostics;
+using LSMS.Services;
 
 namespace LSMS.Controllers
 {
@@ -19,26 +20,26 @@ namespace LSMS.Controllers
 	[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
 	public class AdminsController : Controller
     {
-        private readonly Services.IAuthenticationService authService;
+        private readonly IAuthenticationService authService;
         private readonly ApplicationDbContext dbContext;
+        private readonly IScheduleGeneratorService scheduleGeneratorService;
 
-        public AdminsController(Services.IAuthenticationService authService ,ApplicationDbContext dbContext)
+        public AdminsController(IAuthenticationService authService ,ApplicationDbContext dbContext, IScheduleGeneratorService scheduleGeneratorService)
         {
             this.authService = authService;
             this.dbContext = dbContext;
+            this.scheduleGeneratorService = scheduleGeneratorService;
         }
 
 
 		[CustomAuthorize("Admins")]
 		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-
-
         public IActionResult Profile()
         {
 			string username = User.Identity.Name;
 
 			// Retrieve the full professor details from the database using dbContext
-			var loggedIn = dbContext.Admins.FirstOrDefault(p => p.UserName == username);
+			var loggedIn = dbContext.Admins.FirstOrDefault(p => p.userName == username);
 			if (loggedIn != null)
 			{
 				// Pass the professor model to the view
@@ -97,19 +98,19 @@ namespace LSMS.Controllers
 
                                 var student = new Student
                                 {
-                                    Name = reader.GetValue(0).ToString(),
+                                    name = reader.GetValue(0).ToString(),
                                     SSN = reader.GetValue(1).ToString(),
-                                    PhoneNumber = reader.GetValue(2).ToString(),
-                                    AcademicEmail = reader.GetValue(3).ToString(),
-                                    Password = reader.GetValue(4).ToString(),
-									DepartmentId = (reader.GetValue(5).ToString()),
+                                    phoneNumber = reader.GetValue(2).ToString(),
+                                    academicEmail = reader.GetValue(3).ToString(),
+                                    password = reader.GetValue(4).ToString(),
+									departmentId = (reader.GetValue(5).ToString()),
 									// Add other properties as needed
 								};
                                 var user = new User
                                 {
-                                    Username = reader.GetValue(1).ToString(),
-                                    Password = reader.GetValue(4).ToString(),
-                                    Role = "Students",
+                                    userName = reader.GetValue(1).ToString(),
+                                    password = reader.GetValue(4).ToString(),
+                                    role = "Students",
                                 };
                                 if (dbContext.Students.Contains(student) == false)
                                     students.Add(student);
@@ -176,18 +177,18 @@ namespace LSMS.Controllers
 
 								var professor = new Professor
 								{
-									Name = reader.GetValue(0).ToString(),
+									name = reader.GetValue(0).ToString(),
 									SSN = reader.GetValue(1).ToString(),
-									PhoneNumber = reader.GetValue(2).ToString(),
-									Password = reader.GetValue(3).ToString(),
-									DepartmentId= (reader.GetValue(4).ToString()),
+									phoneNumber = reader.GetValue(2).ToString(),
+									password = reader.GetValue(3).ToString(),
+									departmentId= (reader.GetValue(4).ToString()),
 									// Add other properties as needed
 								};
                                 var user = new User
 								{
-									Username = reader.GetValue(1).ToString(),
-									Password = reader.GetValue(3).ToString(),
-									Role = "Professors",
+									userName = reader.GetValue(1).ToString(),
+									password = reader.GetValue(3).ToString(),
+									role = "Professors",
 								};
                                 if (dbContext.Professors.Contains(professor) == false)
                                     professors.Add(professor);
@@ -215,7 +216,7 @@ namespace LSMS.Controllers
         [HttpPost]
         public ActionResult ProfessorTeachCourse(string courseId)
         {
-            var course = dbContext.Lectures.Where(e => e.CourseId == courseId).Select(e => e.Professor).ToList();
+            var course = dbContext.Lectures.Where(e => e.courseId == courseId).Select(e => e.professor).ToList();
 
             if (course.Count() != 0)
             {
@@ -226,12 +227,12 @@ namespace LSMS.Controllers
         }
         public ActionResult Lectureview()
         {
-            var lecture = dbContext.Lectures.Include(s => s.Students).ToList();
+            var lecture = dbContext.Lectures.Include(s => s.students).ToList();
             return View(lecture);
         }
         public ActionResult StudentsEnrolled()
         {
-            var student = dbContext.Students.Include(s => s.Department).ToList();
+            var student = dbContext.Students.Include(s => s.department).ToList();
             if (student.Count() != 0)
             {
                 return View(student);
@@ -239,5 +240,16 @@ namespace LSMS.Controllers
             ViewBag.ErrorMessage = "there is no students";
             return View(student);
         }
+
+        public IActionResult GenerateSchedule()
+        {
+            // Call your schedule generation logic
+            var lectures = dbContext.Lectures.ToList();
+            var halls =dbContext.Halls.ToList();
+            scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
+            return RedirectToAction("profile", "Admins");
+        }
+
+       
     }
 }

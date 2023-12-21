@@ -13,38 +13,38 @@ namespace LSMS.data_access
         {
             // Course-Professor
             modelBuilder.Entity<Course>()
-            .HasMany(p => p.Professors)
-            .WithMany(p => p.Courses)
+            .HasMany(p => p.professors)
+            .WithMany(p => p.courses)
             .UsingEntity<Lecture>(
                  j => j
-                .HasOne(j => j.Professor)
-                .WithMany(t => t.Lectures)
-                .HasForeignKey(t => t.ProfessorSSN),
+                .HasOne(j => j.professor)
+                .WithMany(t => t.lectures)
+                .HasForeignKey(t => t.professorSSN),
                 j => j
-                .HasOne(j => j.Course)
-                .WithMany(t => t.Lectures)
-                .HasForeignKey(t => t.CourseId),
+                .HasOne(j => j.course)
+                .WithMany(t => t.lectures)
+                .HasForeignKey(t => t.courseId),
                 j =>
                 {
-                    j.HasKey(t => t.Id);
+                    j.HasKey(t => t.id);
                 }
              );
             // CourseProfessor-Student
             modelBuilder.Entity<Student>()
-            .HasMany(p => p.Lectures)
-            .WithMany(p => p.Students)
+            .HasMany(p => p.lectures)
+            .WithMany(p => p.students)
             .UsingEntity<Enrollment>(
                  j => j
-                .HasOne(j => j.Lecture)
-                .WithMany(t => t.Enrollments)
-                .HasForeignKey(t => t.LectureId),
+                .HasOne(j => j.lecture)
+                .WithMany(t => t.enrollments)
+                .HasForeignKey(t => t.lectureId),
                 j => j
-                .HasOne(j => j.Student)
-                .WithMany(t => t.Enrollments)
-                .HasForeignKey(t => t.StudentSSN),
+                .HasOne(j => j.student)
+                .WithMany(t => t.enrollments)
+                .HasForeignKey(t => t.studentSSN),
                 j =>
                 {
-                    j.HasKey(t => new { t.StudentSSN, t.LectureId });
+                    j.HasKey(t => new { t.studentSSN, t.lectureId });
                 }
              );
         }
@@ -57,6 +57,6 @@ namespace LSMS.data_access
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Department> Departments { get; set; }
-        public DbSet<Schedule> Schedules { get; set; }
+       
     }
 }
