@@ -32,7 +32,8 @@ namespace LSMS.Controllers
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Profile()
         {
-            string username = User.Identity.Name;
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
             try
             {
                 var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
@@ -134,6 +135,8 @@ namespace LSMS.Controllers
                     await file.CopyToAsync(stream);
                 }
                 int cnt = 0;
+                var intersections = _dbContext.Intersections.ToList();
+                List<Student> students = new List<Student>();
                 // 
                 using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
                 {
@@ -143,7 +146,6 @@ namespace LSMS.Controllers
                         do
                         {
                             bool isHeaderSkipped = false;
-
                             while (reader.Read())
                             {
                                 if (reader.GetValue(0) == null) break;
@@ -162,13 +164,39 @@ namespace LSMS.Controllers
                                     departmentId = (reader.GetValue(2).ToString()),
                                     // Add other properties as needed
                                 };
-                                var students = _dbContext.Students.Find(student.SSN);
-                                if(students!=null)
+                                var studentFind = _dbContext.Students.Find(student.SSN);
+                                if(studentFind!=null)
                                 {
-                                    _dbContext.Enrollments.Add(new Enrollment { lectureId=LectureId,studentSSN=students.SSN });
+                                    students.Add(studentFind);
+                                    var intersection = new Intersection()
+                                    {
+                                        departmentId = studentFind.departmentId,
+                                        lectureId = LectureId
+                                    };
+                                    if (!intersections.Contains(intersection))
+                                    {
+                                        intersections.Add(intersection);
+                                    }
                                 }
                             }
                         } while (reader.NextResult());
+                        // count all lectures in 
+                        var countlectures = _dbContext.Lectures.Count();
+
+                        var countintersections=intersections.Count();
+                        if(countlectures > countintersections*2)
+                        {
+                            ViewBag.Message = "You exceeded the intersections limit";
+                            return View();
+                        }
+                        foreach(var student in students)
+                        {
+                            _dbContext.Enrollments.Add(new Enrollment()
+                            {
+                                studentSSN= student.SSN,
+                                lectureId=LectureId
+                            });
+                        }
                         await _dbContext.SaveChangesAsync();
 
                         ViewBag.Message = "success";

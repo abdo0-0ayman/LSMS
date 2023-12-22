@@ -1,5 +1,6 @@
 ﻿using LSMS.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 namespace LSMS.data_access
 {
@@ -219,13 +220,11 @@ namespace LSMS.data_access
                         {
                             name="Abdo Hany",
                             userName="abdohany",
-                            password="00000000" // 8 zeros
                         },
                         new Admin()
                         {
                             name="Abdo Ayman",
                             userName="abdoayman",
-                            password="00000000"
                         }
                     });
                     context.SaveChanges();
@@ -233,19 +232,23 @@ namespace LSMS.data_access
                 }
 				if (!context.Users.Any())
 				{
+                    var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                    var hashedPassword = BCrypt.Net.BCrypt.HashPassword("00000000", salt);
                     context.Users.AddRange(new List<User>()
                     {
                         new User()
                         {
                             userName="abdohany",
-                            password="00000000", // 8 zeros
+                            Salt = Encoding.UTF8.GetBytes(salt),
+                            PasswordHash = Encoding.UTF8.GetBytes(hashedPassword),
                             role="Admins"
                         },
                         new User()
                         {
                             userName="abdoayman",
-                            password="00000000",
-					        role="Admins"
+                            Salt = Encoding.UTF8.GetBytes(salt),
+                            PasswordHash = Encoding.UTF8.GetBytes(hashedPassword),
+                            role="Admins"
 						},
                     });
                     context.SaveChanges();
@@ -439,7 +442,24 @@ namespace LSMS.data_access
                         },
                     }) ;
                     context.SaveChanges();
+                    
                 }
+                if(!context.Halls.Any())
+                {
+                    context.Halls.AddRange(new List<Hall>()
+                    {
+                        new Hall()
+                        {
+                            capacity=300
+                        },
+                        new Hall()
+                        {
+                            capacity=300
+                        }
+                    }) ;
+                    context.SaveChanges();
+                }
+
                 //var professors= context.Professors.ToList();
                 //var courses =context.Courses.ToList();
                 //var cp=new List<CourseProfessor>();

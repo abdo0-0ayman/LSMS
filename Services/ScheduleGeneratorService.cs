@@ -10,10 +10,10 @@ namespace LSMS.Services
 
         public ScheduleGeneratorService(ApplicationDbContext dbContext)
         {
-            dbContext = dbContext;
+            this.dbContext = dbContext;
         }
 
-        private const int MaxLectureSlots = 20;
+        private int MaxLectureSlots = 25;
         private List<List<int>> _currentHalls;
         private int _numberOfHalls;
 
@@ -21,7 +21,7 @@ namespace LSMS.Services
         {
             _numberOfHalls = halls.Count;
             _currentHalls = new List<List<int>>();
-            for (int i = 0; i <= _numberOfHalls; i++)
+            for (int i = 0; i < _numberOfHalls; i++)
             {
                 _currentHalls.Add(new List<int>());
             }
@@ -38,7 +38,7 @@ namespace LSMS.Services
                 return true;
             }
 
-            List<int> grid = Enumerable.Repeat(1, MaxLectureSlots).ToList();
+            List<int> grid = Enumerable.Repeat(0, MaxLectureSlots).ToList();
 
             foreach (var student in lectures[index].students)
             {
@@ -83,7 +83,7 @@ namespace LSMS.Services
                     }
 
                     _currentHalls[grid[i]].Remove(i);
-                    lectures[index].hallId = 1;
+                    lectures[index].hallId = 0;
                     lectures[index].lectureNum = -1;
                 }
             }

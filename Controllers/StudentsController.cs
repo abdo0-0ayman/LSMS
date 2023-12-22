@@ -1,6 +1,7 @@
 ﻿using LSMS.data_access;
 using LSMS.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LSMS.Controllers
 {
@@ -20,11 +21,12 @@ namespace LSMS.Controllers
 		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
 		public IActionResult Profile()
 		{
-			// Retrieve the currently authenticated professor's userName
-			string userName = User.Identity.Name;
+            // Retrieve the currently authenticated professor's userName
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
-			// Retrieve the full professor details from the database using dbContext
-			var loggedIn = dbContext.Students.FirstOrDefault(p => p.SSN == userName);
+            // Retrieve the full professor details from the database using dbContext
+            var loggedIn = dbContext.Students.FirstOrDefault(p => p.SSN == username);
 			if (loggedIn != null)
 			{
 				// Pass the professor model to the view

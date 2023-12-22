@@ -47,6 +47,7 @@ namespace LSMS.data_access
                     j.HasKey(t => new { t.studentSSN, t.lectureId });
                 }
              );
+            modelBuilder.Entity<Intersection>().HasKey(t => new { t.departmentId, t.lectureId });
         }
         public DbSet<Student> Students { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
@@ -57,6 +58,7 @@ namespace LSMS.data_access
         public DbSet<Admin> Admins { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Intersection> Intersections { get; set; }
        
     }
 }

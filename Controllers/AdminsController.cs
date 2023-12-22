@@ -13,6 +13,7 @@ using System.Text;
 using ExcelDataReader;
 using System.Diagnostics;
 using LSMS.Services;
+using System.Security.Claims;
 
 namespace LSMS.Controllers
 {
@@ -36,7 +37,8 @@ namespace LSMS.Controllers
 		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Profile()
         {
-			string username = User.Identity.Name;
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
 			// Retrieve the full professor details from the database using dbContext
 			var loggedIn = dbContext.Admins.FirstOrDefault(p => p.userName == username);
@@ -95,6 +97,9 @@ namespace LSMS.Controllers
                                     isHeaderSkipped = true;
                                     continue;
                                 }
+                                // Hashing Password
+                                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(reader.GetValue(4).ToString(), salt);
 
                                 var student = new Student
                                 {
@@ -102,14 +107,14 @@ namespace LSMS.Controllers
                                     SSN = reader.GetValue(1).ToString(),
                                     phoneNumber = reader.GetValue(2).ToString(),
                                     academicEmail = reader.GetValue(3).ToString(),
-                                    password = reader.GetValue(4).ToString(),
 									departmentId = (reader.GetValue(5).ToString()),
 									// Add other properties as needed
 								};
                                 var user = new User
                                 {
                                     userName = reader.GetValue(1).ToString(),
-                                    password = reader.GetValue(4).ToString(),
+                                    Salt = Encoding.UTF8.GetBytes(salt),
+                                    PasswordHash = Encoding.UTF8.GetBytes(hashedPassword),
                                     role = "Students",
                                 };
                                 if (dbContext.Students.Contains(student) == false)
@@ -174,21 +179,24 @@ namespace LSMS.Controllers
 									isHeaderSkipped = true;
 									continue;
 								}
+                                // Hashing Password
+                                var salt = BCrypt.Net.BCrypt.GenerateSalt();
+                                var hashedPassword = BCrypt.Net.BCrypt.HashPassword(reader.GetValue(3).ToString(), salt);
 
-								var professor = new Professor
+                                var professor = new Professor
 								{
 									name = reader.GetValue(0).ToString(),
 									SSN = reader.GetValue(1).ToString(),
 									phoneNumber = reader.GetValue(2).ToString(),
-									password = reader.GetValue(3).ToString(),
 									departmentId= (reader.GetValue(4).ToString()),
 									// Add other properties as needed
 								};
                                 var user = new User
 								{
 									userName = reader.GetValue(1).ToString(),
-									password = reader.GetValue(3).ToString(),
-									role = "Professors",
+                                    Salt = Encoding.UTF8.GetBytes(salt),
+                                    PasswordHash = Encoding.UTF8.GetBytes(hashedPassword),
+                                    role = "Professors",
 								};
                                 if (dbContext.Professors.Contains(professor) == false)
                                     professors.Add(professor);
@@ -244,12 +252,30 @@ namespace LSMS.Controllers
         public IActionResult GenerateSchedule()
         {
             // Call your schedule generation logic
-            var lectures = dbContext.Lectures.ToList();
-            var halls =dbContext.Halls.ToList();
+            var lectures = dbContext.Lectures.Include(l=>l.students).Include(l=>l.professor).ToList();
+            var halls = dbContext.Halls.ToList();
+            if (halls.Count() * 25 < lectures.Count())
+            {
+                // add halls
+            }
+            else if(halls.Count()>=dbContext.Departments.Count())//عدد الاقسام
+            {
+                // max(sum)>25 -> invalid
+                // else -> run code
+            }
+            else
+            {
+                //max(courses of a department)+ all intersections >25  -> add halls
+                // else run code
+            }
             scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
-            return RedirectToAction("profile", "Admins");
-        }
 
-       
+            return RedirectToAction("schedule");
+        }
+        public IActionResult schedule()
+        {
+            var lecture = dbContext.Lectures.ToList();
+            return View(lecture);
+        }
     }
 }

@@ -8,7 +8,9 @@ namespace LSMS.Models
 	{
 		public int id { get; set; }
 		public string userName { get; set; }
-		public string password { get; set; }
+        public byte[] PasswordHash { get; set; }
+        public byte[] Salt { get; set; }
+        //public string password { get; set; }
 		public string role { get; set; } // Added property for user role
 	}
 

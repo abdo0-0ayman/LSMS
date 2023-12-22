@@ -10,7 +10,7 @@ namespace LSMS.Models
         public string name { get; set; }
         public string phoneNumber { get; set; }
         public string academicEmail { get; set; }
-        public string password { get; set; }
+        //public string password { get; set; }
 
 		// Relation with Department
 		public string departmentId { get; set; }

@@ -27,19 +27,19 @@ namespace LSMS.Services
 
         public Professor? AuthenticateProfessor(string username, string password)
         {
-            loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username && p.password == password);
+            loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
 
             return loggedInProfessor;
         }
         public Student? AuthenticateStudent(string username, string password)
         {
-            loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username && p.password == password);
+            loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
 
             return loggedInStudent;
         }
         public Admin? AuthenticateAdmin(string username, string password)
         {
-            loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.userName == username && p.password == password);
+            loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.userName == username);
 
             return loggedInAdmin;
         }
@@ -47,7 +47,8 @@ namespace LSMS.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, professor.SSN),
+                new Claim(ClaimTypes.NameIdentifier, professor.SSN),
+                new Claim(ClaimTypes.Name, professor.name)
                 // Add other claims as needed
             };
 
@@ -65,7 +66,9 @@ namespace LSMS.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, student.SSN),
+                new Claim(ClaimTypes.NameIdentifier, student.SSN),
+                new Claim(ClaimTypes.Name, student.name)
+
                 // Add other claims as needed
             };
 
@@ -84,7 +87,8 @@ namespace LSMS.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, admin.userName),
+                new Claim(ClaimTypes.NameIdentifier, admin.userName),
+                new Claim(ClaimTypes.Name, admin.name),
                 // Add other claims as needed
             };
 

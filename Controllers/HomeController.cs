@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using System.Security.Claims;
+using System.Text;
 
 namespace LSMS.Controllers
 {
@@ -44,12 +45,28 @@ namespace LSMS.Controllers
 				return RedirectToAction("Profile", User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value);
 			}
 
-			var user = dbContext.Users.FirstOrDefault(p => p.userName == username && p.password == password);
+			var user = dbContext.Users.FirstOrDefault(p => p.userName == username);
 			if (user != null)
 			{
-				var claims = new List<Claim>
+                var hashedPassword = Encoding.UTF8.GetString(user.PasswordHash);
+                var salt = Encoding.UTF8.GetString(user.Salt);
+
+                if (!(BCrypt.Net.BCrypt.Verify(password, hashedPassword)))
+                {
+                    ViewBag.ErrorMessage = "You Entered An Invalid Password";
+                    return View();
+                }
+                var loggedInProfessor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+                var loggedInStudent = dbContext.Students.FirstOrDefault(p => p.SSN == username);
+                var loggedInAdmin = dbContext.Admins.FirstOrDefault(p => p.userName == username);
+				string name = username;
+				if(loggedInProfessor != null )name=loggedInProfessor.name; 
+				if(loggedInStudent != null)name=loggedInStudent.name; 
+				if(loggedInAdmin != null)name=loggedInAdmin.name;
+                var claims = new List<Claim>
 				{
-					new Claim(ClaimTypes.Name, user.userName),
+                    new Claim(ClaimTypes.NameIdentifier , username),
+                    new Claim(ClaimTypes.Name, name),
 					new Claim(ClaimTypes.Role, user.role)
 					// Add other claims as needed
 				};
@@ -60,7 +77,7 @@ namespace LSMS.Controllers
 
 				return RedirectToAction("Profile", user.role);
 			}
-			ViewBag.ErrorMessage = "Invalid username or password";
+			ViewBag.ErrorMessage = "You Entered An Invalid Username";
 			return View();
 		}
 		public async Task<IActionResult> Logout()

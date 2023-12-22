@@ -12,7 +12,7 @@ namespace LSMS.Models
        
         [Display(Name = "Phone Number")]
         public string phoneNumber { get; set; }
-        public string password { get; set; }
+        //public string password { get; set; }
 
         // Relation with Department
 		public string departmentId { get; set; }
