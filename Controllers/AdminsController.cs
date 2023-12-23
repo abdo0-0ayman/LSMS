@@ -217,6 +217,77 @@ namespace LSMS.Controllers
 			return View();
 		}
 
+
+        public IActionResult UploadExcelCourse()
+        {
+            var departments = dbContext.Departments.ToList();
+            return View(departments);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadExcelCourse(IFormFile file,string depatmentId)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            if (file != null && file.Length > 0)
+            {
+                var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads\\";
+
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // Create the complete path \\wwwroot\\Uploads\\filename
+                var filePath = Path.Combine(uploadsFolder, file.FileName);
+
+                //Copies the content of the uploaded file to the specified file path
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var courses = new List<Course>();
+                        do
+                        {
+                            bool isHeaderSkipped = false;
+
+                            while (reader.Read())
+                            {
+                                if (!isHeaderSkipped)
+                                {
+                                    isHeaderSkipped = true;
+                                    continue;
+                                }
+                                var course = new Course
+                                {
+                                    id = reader.GetValue(0).ToString(),
+                                    name = reader.GetValue(1).ToString(),
+                                    hours= Convert.ToInt32(reader.GetValue(2)),
+                                    departmentId = depatmentId,
+                                    // Add other properties as needed
+                                };
+                                if (dbContext.Courses.Contains(course) == false)
+                                    courses.Add(course);
+                            }
+                        } while (reader.NextResult());
+                        dbContext.Courses.AddRange(courses);
+                        await dbContext.SaveChangesAsync();
+
+                        ViewBag.Message = "success";
+                    }
+                }
+            }
+            else
+                ViewBag.Message = "empty";
+            return View();
+        }
+
+
+
         public ActionResult ProfessorTeachCourse()
         {
             return View();
@@ -276,6 +347,37 @@ namespace LSMS.Controllers
         {
             var lecture = dbContext.Lectures.ToList();
             return View(lecture);
+        }
+
+        public IActionResult CreateDepartment()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateDepartment(string id,string name)
+        {
+            Department department = new Department();
+            department.id = id;
+            department.name = name;
+            dbContext.Departments.Add(department);
+            dbContext.SaveChanges();
+            return View();
+        }
+        public IActionResult CreateHall()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateHall(int id,int capacity)
+        {
+            Hall hall = new Hall();
+            hall.id = id;
+            hall.capacity = capacity;
+            dbContext.Add(hall);
+            dbContext.SaveChanges();
+            return View();
         }
     }
 }

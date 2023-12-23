@@ -1,0 +1,28 @@
+﻿@model List<Department>
+@if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "success")
+{
+    <div class="alert alert-success" role="alert">
+        All records inserted successfully
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "empty")
+{
+    <div class="alert alert-warning" role="alert">
+        File is empty
+    </div>
+}
+<form asp-controller="Admins" asp-action="UploadExcelCourse" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="file">Upload Excel File:</label>
+        <input type="file" name="file" class="form-control" />
+        <label for="departmentId">Select an Item:</label>
+        <select name="departmentId" class="form-control">
+            <option value="">Select an Item</option>
+            @foreach (var item in Model)
+            {
+                <option value="@item.id">@item.name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
