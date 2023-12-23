@@ -444,7 +444,7 @@ namespace LSMS.data_access
                     context.SaveChanges();
                     
                 }
-                if(!context.Halls.Any())
+                /*if(!context.Halls.Any())
                 {
                     context.Halls.AddRange(new List<Hall>()
                     {
@@ -459,6 +459,7 @@ namespace LSMS.data_access
                     }) ;
                     context.SaveChanges();
                 }
+                */
 
                 //var professors= context.Professors.ToList();
                 //var courses =context.Courses.ToList();

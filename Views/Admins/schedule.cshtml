@@ -1,7 +1,4 @@
-﻿@model List<Lecture>
-
-
-<style>
+﻿<style>
     table {
         width: 100%;
         border-collapse: collapse;
@@ -38,42 +35,55 @@
     }
 </style>
 
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@model List<Lecture>
+
+
 <h2>Schedule</h2>
+@{
+    var hallList = (ViewBag.Halls as List<Hall>).Select(l => new SelectListItem { Value = l.id.ToString(),Text=l.id.ToString() });
+}
+@using (Html.BeginForm("schedule", "Admins", FormMethod.Post))
+{
 
-<table border="1">
-    <tr>
-        <th>Time/Day</th>
-        <th>Monday</th>
-        <th>Tuesday</th>
-        <th>Wednesday</th>
-        <th>Thursday</th>
-        <th>Friday</th>
-    </tr>
+    <label for="hallDropdown">Choose Hall: </label>    
+    
+    @Html.DropDownList("selectedHall", new SelectList(hallList, "Value", "Text"), "All Halls", new { onchange = "this.form.submit();" })
 
-    @for (int i = 8; i <=14; i+=2) // Assuming lectures occur between 8 AM and 5 PM
-    {
+    <table border="1">
         <tr>
-            <td>@i:00 - @(i + 2):00</td>
-            @for (int j = 1; j <= 5; j++) // Assuming Monday to Friday schedule
-            {
-                <td>
-                    @{
-                        int time= (i-8)/2;
-                        time+=(j-1)*4;
-                        var lecture = Model.FirstOrDefault(l => l.lectureNum==time);
-                        if (lecture != null)
-                        {
-                            <p>@lecture.id</p>
-                        }
-                        else
-                        {
-                            <p>No Lecture</p>
-                        }
-                    }
-                </td>
-            }
+            <th>Time/Day</th>
+            <th>Sunday</th>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
         </tr>
-    }
-</table>
 
-<button id="downloadButton">Download Schedule</button>
+        @for (int i = 8; i <= 16; i += 2)
+        {
+            <tr>
+                <td>@i:00 - @(i + 2):00</td>
+                @for (int j = 1; j <= 5; j++)
+                {
+                    <td>
+                        @{
+                            int time = (i - 8) / 2;
+                            time += (j - 1) * 5;
+                            var lecture = Model.FirstOrDefault(l => l.lectureNum == time );
+                            if (lecture != null)
+                            {
+                                <p>@lecture.id</p>
+                            }
+                            else
+                            {
+                                <p>No Lecture</p>
+                            }
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+}

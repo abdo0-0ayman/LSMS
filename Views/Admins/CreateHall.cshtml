@@ -1,4 +1,16 @@
 ﻿@model Hall
+@if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyId")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid hall id
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyCapacity")
+{
+    <div class="alert alert-danger" role="alert">
+        The capcaity should be at least 50 student
+    </div>
+}
 <div class="row text">
     <div class="col-md-8 offset-2">
         <p>
@@ -19,12 +31,11 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="capacity" class="control-label"></label>
-                        <input asp-for="capacity" class="form-control" />
+                        <input asp-for="capacity" class="form-control" type="text" pattern="[0-9]*" />
                         <span asp-validation-for="capacity" class="text-danger"></span>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateHall"/>
-                        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
                     </div>
                 </form>
             </div>

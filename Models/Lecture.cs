@@ -16,7 +16,7 @@ namespace LSMS.Models
         public virtual Professor professor { get; set; }
 
         // relation with Hall
-        public int? hallId { get; set; }
+        public string? hallId { get; set; }
         public Hall hall { get; set; }
 
         // Relation with Students

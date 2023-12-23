@@ -11,6 +11,12 @@ else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "empty")
         File is empty
     </div>
 }
+else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyDepartment")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid department id
+    </div>
+}
 <form asp-controller="Admins" asp-action="UploadExcelCourse" method="post" enctype="multipart/form-data">
     <div class="form-group">
         <label for="file">Upload Excel File:</label>

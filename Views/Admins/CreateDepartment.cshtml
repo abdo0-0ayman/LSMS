@@ -1,4 +1,16 @@
 ﻿@model Department
+@if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyId")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid department id
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyName")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid department name
+    </div>
+}
 <div class="row text">
     <div class="col-md-8 offset-2">
         <p>
@@ -24,7 +36,6 @@
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateDepartment"/>
-                        <a class="btn btn-outline-secondary" asp-action="Index">Show All</a>
                     </div>
                 </form>
             </div>

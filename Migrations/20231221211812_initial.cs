@@ -54,8 +54,7 @@ namespace LSMS.Migrations
                 name: "Halls",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     capacity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -128,7 +127,7 @@ namespace LSMS.Migrations
                     id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     courseId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     professorSSN = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    hallId = table.Column<int>(type: "int", nullable: true),
+                    hallId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     lectureNum = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

@@ -225,8 +225,14 @@ namespace LSMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UploadExcelCourse(IFormFile file,string depatmentId)
+        public async Task<IActionResult> UploadExcelCourse(IFormFile file, string departmentId)
         {
+            var departments = dbContext.Departments.ToList();
+            if (departmentId == null)
+            {
+                ViewBag.Message = "emptyDepartment";
+                return View(departments);
+            }
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             if (file != null && file.Length > 0)
@@ -267,7 +273,7 @@ namespace LSMS.Controllers
                                     id = reader.GetValue(0).ToString(),
                                     name = reader.GetValue(1).ToString(),
                                     hours= Convert.ToInt32(reader.GetValue(2)),
-                                    departmentId = depatmentId,
+                                    departmentId = departmentId,
                                     // Add other properties as needed
                                 };
                                 if (dbContext.Courses.Contains(course) == false)
@@ -283,7 +289,7 @@ namespace LSMS.Controllers
             }
             else
                 ViewBag.Message = "empty";
-            return View();
+            return View(departments);
         }
 
 
@@ -323,30 +329,63 @@ namespace LSMS.Controllers
         public IActionResult GenerateSchedule()
         {
             // Call your schedule generation logic
-            var lectures = dbContext.Lectures.Include(l=>l.students).Include(l=>l.professor).ToList();
+            var lectures = dbContext.Lectures.Include(l => l.students).Include(l => l.professor).ToList();
             var halls = dbContext.Halls.ToList();
             if (halls.Count() * 25 < lectures.Count())
             {
                 // add halls
             }
-            else if(halls.Count()>=dbContext.Departments.Count())//عدد الاقسام
+            else if (halls.Count() >= dbContext.Departments.Count())
             {
-                // max(sum)>25 -> invalid
-                // else -> run code
+                int worst = 0;
+                var departments = dbContext.Departments.Include(l => l.courses).ToList();
+                foreach (var department in departments)
+                {
+                    var worstlecture = dbContext.Lectures.Where(l => l.course.departmentId == department.id).Count();
+                    var worstintersection = dbContext.Intersections.Where(l => l.departmentId == department.id).Count();
+
+                    if (worstlecture + worstintersection > worst)
+                        worst = worstlecture + worstintersection;
+                }
+                if (worst > 25) ViewBag.ErrorMessage
+                     = "We can't generate schedule because you exceeded the intersection limit";
+                else scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
             }
             else
             {
-                //max(courses of a department)+ all intersections >25  -> add halls
-                // else run code
+                int totalIntersections = dbContext.Intersections.Count(), maxCourses = 0;
+                foreach (var dep in dbContext.Departments.Include(l => l.courses).ToList())
+                {
+                    if (dep.courses.Count() > maxCourses)
+                    {
+                        maxCourses = dep.courses.Count();
+                    }
+                }
+                if (totalIntersections + maxCourses > 25) ;//-> add halls
+                else scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
             }
-            scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
-
             return RedirectToAction("schedule");
         }
         public IActionResult schedule()
         {
-            var lecture = dbContext.Lectures.ToList();
-            return View(lecture);
+            var lectures = new List<Lecture>();
+            var halls = dbContext.Halls.ToList();
+            ViewBag.Halls = halls;
+            return View(lectures);
+        }
+
+        [HttpPost]
+        public IActionResult schedule(string selectedHall)
+        {
+            var halls = dbContext.Halls.ToList();
+            ViewBag.Halls = halls;
+            List<Lecture> lectures = dbContext.Lectures.ToList(); // Implement GetLectures() to retrieve your lectures from the database or another source
+            if (!string.IsNullOrEmpty(selectedHall))
+            {
+                // Filter lectures based on the selected hall
+                lectures = lectures.Where(l => l.hallId.ToString() == selectedHall).ToList();
+            }
+            return View(lectures);
         }
 
         public IActionResult CreateDepartment()
@@ -357,6 +396,18 @@ namespace LSMS.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateDepartment(string id,string name)
         {
+            /*
+            if (id == null)
+            {
+                //ViewBag.Message = "emptyId";
+                return View();
+            }
+            else if (name == null)
+            {
+                //ViewBag.Message = "emptyName";
+                return View();
+            }
+            */
             Department department = new Department();
             department.id = id;
             department.name = name;
@@ -370,8 +421,20 @@ namespace LSMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateHall(int id,int capacity)
+        public async Task<IActionResult> CreateHall(string id, int capacity)
         {
+            /*
+            if (id == null)
+            {
+                ViewBag.Message = "emptyId";
+                return View();
+            }
+            else if (capacity<=50)
+            {
+                ViewBag.Message = "emptyCapacity";
+                return View();
+            }
+            */
             Hall hall = new Hall();
             hall.id = id;
             hall.capacity = capacity;

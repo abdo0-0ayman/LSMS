@@ -16,7 +16,6 @@ namespace LSMS.Services
         private int MaxLectureSlots = 25;
         private List<List<int>> _currentHalls;
         private int _numberOfHalls;
-
         public void GenerateScheduleBacktrack(List<Lecture> lectures, List<Hall> halls)
         {
             _numberOfHalls = halls.Count;
@@ -25,10 +24,13 @@ namespace LSMS.Services
             {
                 _currentHalls.Add(new List<int>());
             }
-
             GenerateLectureSchedule(lectures, 0);
-
-            ApplyChangesToDatabase(lectures, halls);
+            foreach (var lecture in lectures)
+            {
+                //int hallindex = lecture.hallId.HasValue ? lecture.hallId.Value : 0; // Default value if HallId is null
+                //lecture.hallId = halls[hallindex].id;
+            }
+            ApplyChangesToDatabase(lectures);
         }
 
         private bool GenerateLectureSchedule(List<Lecture> lectures, int index)
@@ -42,55 +44,57 @@ namespace LSMS.Services
 
             foreach (var student in lectures[index].students)
             {
-                foreach (var timeInfo in student.lectures)
+                foreach (var slot in student.lectures)
                 {
-                    if (timeInfo.lectureNum != -1)
+                    if (slot.lectureNum != -1)
                     {
-                        grid[timeInfo.lectureNum] = _numberOfHalls;
+                        grid[slot.lectureNum] = _numberOfHalls;
                     }
                 }
             }
 
             var professor = lectures[index].professor;
 
-            foreach (var timeInfo in professor.lectures)
+            foreach (var slot in professor.lectures)
             {
-                if (timeInfo.lectureNum != -1)
+                if (slot.lectureNum != -1)
                 {
-                    grid[timeInfo.lectureNum] = _numberOfHalls;
+                    grid[slot.lectureNum] = _numberOfHalls;
                 }
             }
 
             foreach (var hall in _currentHalls)
             {
-                foreach (var timeInfo in hall)
+                foreach (var slot in hall)
                 {
-                    grid[timeInfo]++;
+                    grid[slot]++;
                 }
             }
 
-            for (int i = 0; i < MaxLectureSlots; i++)
+            for (int j = 0; j < 5; j++)
             {
-                if (grid[i] <= _numberOfHalls)
+                for (int k = 0; k < 5; k++)
                 {
-                    lectures[index].lectureNum = i;
-                    _currentHalls[grid[i]].Add(i);
-                    lectures[index].hallId = grid[i];
-
-                    if (GenerateLectureSchedule(lectures, index + 1))
+                    int i = k * 5 + j;
+                    if (grid[i] < _numberOfHalls)
                     {
-                        return true;
+                        lectures[index].lectureNum = i;
+                        _currentHalls[grid[i]].Add(i);
+                        //lectures[index].hallId = grid[i];
+                        if (GenerateLectureSchedule(lectures, index + 1))
+                        {
+                            return true;
+                        }
+                        _currentHalls[grid[i]].Remove(i);
+                        //lectures[index].hallId = -1;
+                        lectures[index].lectureNum = -1;
                     }
-
-                    _currentHalls[grid[i]].Remove(i);
-                    lectures[index].hallId = 0;
-                    lectures[index].lectureNum = -1;
                 }
             }
 
             return false;
         }
-        private void ApplyChangesToDatabase(List<Lecture> modifiedLectures, List<Hall> modifiedRooms)
+        private void ApplyChangesToDatabase(List<Lecture> modifiedLectures)
         {
             foreach (var lecture in modifiedLectures)
             {
@@ -99,6 +103,7 @@ namespace LSMS.Services
                 if (existingLecture != null)
                 {
                     existingLecture.lectureNum = lecture.lectureNum;
+                    existingLecture.hallId = lecture.hallId;
                     // Update other lecture properties as needed
                 }
             }
