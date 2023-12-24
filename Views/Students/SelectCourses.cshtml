@@ -1,0 +1,20 @@
+﻿@model Student
+
+<h4>@Model.name</h4>
+<form asp-action="SelectCourses" method="post">
+    <input type="hidden" name="studentSSN" value="@Model.SSN" />
+
+    <label>Select Courses:</label>
+    <div>
+        @foreach (var course in ViewBag.Courses as List<Course>)
+        {
+            <div>
+                <input type="checkbox" name="selectedCourses" value="@course.id" id="@($"course-{course.id}")">
+                <label for="@($"course-{course.id}")">@course.name</label>
+            </div>
+        }
+    </div>
+
+    <br />
+    <button type="submit">Save</button>
+</form>

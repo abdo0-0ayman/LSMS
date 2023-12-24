@@ -68,7 +68,7 @@
                                 <h6 class="mb-0">Department</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
-                                @Model.department
+                                @Model.departmentId
                             </div>
                         </div>
 
@@ -81,8 +81,3 @@
 
     </div>
 </div>
-
-@if (User.Identity.IsAuthenticated)
-{
-    <li><a asp-controller="Home" asp-action="Logout">Logout</a></li>
-}<!-- Add other profile information as needed -->

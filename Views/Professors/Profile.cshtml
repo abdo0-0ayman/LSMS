@@ -65,7 +65,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-sm-3">
-                                <h6 class="mb-0">ID</h6>
+                                <h6 class="mb-0">SSN</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
                                 @Model.SSN
@@ -86,7 +86,7 @@
                                 <h6 class="mb-0">Department</h6>
                             </div>
                             <div class="col-sm-9 text-secondary">
-                                @Model.department
+                                @Model.departmentId
                             </div>
                         </div>
                         <hr>
@@ -98,7 +98,3 @@
 
     </div>
 </div>
-@if (User.Identity.IsAuthenticated)
-{
-    <li><a asp-controller="Home" asp-action="Logout">Logout</a></li>
-}<!-- Add other profile information as needed -->
