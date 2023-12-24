@@ -13,16 +13,16 @@ namespace LSMS.Services
             this.dbContext = dbContext;
         }
 
-        private int MaxLectureSlots = 25;
-        private List<List<int>> _currentHalls;
-        private int _numberOfHalls;
+        private int maxLectureSlots = 25;
+        private List<List<int>> currentHalls;
+        private int NumberOfHalls;
         public void GenerateScheduleBacktrack(List<Lecture> lectures, List<Hall> halls)
         {
-            _numberOfHalls = halls.Count;
-            _currentHalls = new List<List<int>>();
-            for (int i = 0; i < _numberOfHalls; i++)
+            NumberOfHalls = halls.Count;
+            currentHalls = new List<List<int>>();
+            for (int i = 0; i < NumberOfHalls; i++)
             {
-                _currentHalls.Add(new List<int>());
+                currentHalls.Add(new List<int>());
             }
             GenerateLectureSchedule(lectures, 0);
             foreach (var lecture in lectures)
@@ -40,7 +40,7 @@ namespace LSMS.Services
                 return true;
             }
 
-            List<int> grid = Enumerable.Repeat(0, MaxLectureSlots).ToList();
+            List<int> capacityState = Enumerable.Repeat(0, maxLectureSlots).ToList();
 
             foreach (var student in lectures[index].students)
             {
@@ -48,7 +48,7 @@ namespace LSMS.Services
                 {
                     if (slot.lectureNum != -1)
                     {
-                        grid[slot.lectureNum] = _numberOfHalls;
+                        capacityState[slot.lectureNum] = NumberOfHalls;
                     }
                 }
             }
@@ -59,33 +59,33 @@ namespace LSMS.Services
             {
                 if (slot.lectureNum != -1)
                 {
-                    grid[slot.lectureNum] = _numberOfHalls;
+                    capacityState[slot.lectureNum] = NumberOfHalls;
                 }
             }
 
-            foreach (var hall in _currentHalls)
+            foreach (var hall in currentHalls)
             {
                 foreach (var slot in hall)
                 {
-                    grid[slot]++;
+                    capacityState[slot]++;
                 }
             }
 
-            for (int j = 0; j < 5; j++)
+            for (int i = 0; i < 5; i++)
             {
-                for (int k = 0; k < 5; k++)
+                for (int j = 0; j < 5; j++)
                 {
-                    int i = k * 5 + j;
-                    if (grid[i] < _numberOfHalls)
+                    int cnt = j * 5 + i;
+                    if (capacityState[cnt] < NumberOfHalls)
                     {
-                        lectures[index].lectureNum = i;
-                        _currentHalls[grid[i]].Add(i);
-                        lectures[index].hallId = grid[i].ToString();
+                        lectures[index].lectureNum = cnt;
+                        currentHalls[capacityState[cnt]].Add(cnt);
+                        lectures[index].hallId = capacityState[cnt].ToString();
                         if (GenerateLectureSchedule(lectures, index + 1))
                         {
                             return true;
                         }
-                        _currentHalls[grid[i]].Remove(i);
+                        currentHalls[capacityState[cnt]].Remove(cnt);
                         lectures[index].hallId = null;
                         lectures[index].lectureNum = -1;
                     }

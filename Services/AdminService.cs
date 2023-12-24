@@ -5,22 +5,22 @@ namespace LSMS.Services
 {
     public class AdminService : IAdminService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly ApplicationDbContext dbContext;
 
         public AdminService(ApplicationDbContext context)
         {
-            _context = context;
+            dbContext = context;
         }
         public void AddProfessor(Professor professor)
         {
-            _context.Professors.Add(professor);
-            _context.SaveChanges();
+            dbContext.Professors.Add(professor);
+            dbContext.SaveChanges();
         }
 
         public void AddStudent(Student student)
         {
-            _context.Students.Add(student);
-            _context.SaveChanges();
+            dbContext.Students.Add(student);
+            dbContext.SaveChanges();
         }
 
         public Professor GetProfessor(string professorId)
@@ -35,9 +35,9 @@ namespace LSMS.Services
 
         public void RemoveProfessor(string professorId)
         {
-            var result = _context.Professors.FirstOrDefault(n => n.SSN == professorId);
-            _context.Professors.Remove(result);
-            _context.SaveChanges();
+            var result = dbContext.Professors.FirstOrDefault(n => n.SSN == professorId);
+            dbContext.Professors.Remove(result);
+            dbContext.SaveChanges();
         }
 
         public void RemoveStudent(string studentId)
