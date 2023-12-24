@@ -1,5 +1,11 @@
 ﻿<!-- Views/Professor/ProfileProfessor.cshtml -->
 @model Admin
+
+
+<head>
+    <!-- Other meta tags and head content -->
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
 <div class="container">
     <div class="main-body">
 
@@ -111,33 +117,66 @@
                            Generate Schedule
                     </a>
 
-                </div>
-                            <form class="login100-form validate-form flex-sb flex-w" asp-controller="Admins" asp-action="ProfessorTeachCourse" method="post">
-                                <div class="mb-1">
-                                    <input class="input100" type="text" name="courseId">
+                <form class="login100-form validate-form flex-sb flex-w" asp-controller="Admins" asp-action="ProfessorTeachCourse" method="post">
+                    <div class="mb-1">
+                        <input class="input100" type="text" name="courseId">
+                    </div>
+
+                    <div class="mb-1 container-login100-form-btn m-t-17">
+                        <button class="login100-form-btn">
+                            Show
+                        </button>
+                    </div>
+
+                    <div class="mb-1 text-white">
+                        <a asp-controller="Admins" asp-action="CreateDepartment" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Add Department
+                        </a>
+                    </div>
+
+                    <div class="mb-1 text-white">
+                        <a asp-controller="Admins" asp-action="CreateHall" class="btn btn-success">
+                            <i class="bi bi-plus-circle"></i> Add Hall
+                        </a>
+                                        
+                    </div>
+        </form>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <a asp-controller="Admins" asp-action="DeleteCourse" class="btn btn-danger btn-block mb-3">
+                                            <i class="bi bi-trash"></i> Delete   Course
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a asp-controller="Admins" asp-action="DeleteProfessor" class="btn btn-danger btn-block mb-3">
+                                            <i class="bi bi-trash"></i> Delete   Professor
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a asp-controller="Admins" asp-action="DeleteStudent" class="btn btn-danger btn-block mb-3">
+                                            <i class="bi bi-trash"></i> Delete   Student
+                                        </a>
+                                    </div>
                                 </div>
 
-                                <div class="mb-1 container-login100-form-btn m-t-17">
-                                    <button class="login100-form-btn">
-                                        Show
-                                    </button>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <a asp-controller="Admins" asp-action="DeleteLecture" class="btn btn-danger btn-block mb-3">
+                                            <i class="bi bi-trash"></i> Delete   Lecture
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a asp-controller="Admins" asp-action="DeleteHall" class="btn btn-danger btn-block mb-3">
+                                            <i class="bi bi-trash"></i> Delete   Hall
+                                        </a>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <a asp-controller="Admins" asp-action="DeleteDepartment" class="btn btn-danger btn-block mb-3">
+                                            <i class="bi bi-trash"></i> Delete Department
+                                        </a>
+                                    </div>
                                 </div>
 
-                                <div class="mb-1 text-white">
-                                    <a asp-controller="Admins" asp-action="CreateDepartment" class="btn btn-success">
-                                        <i class="bi bi-plus-circle"></i> Add Department
-                                    </a>
-                                </div>
-
-                                <div class="mb-1 text-white">
-                                    <a asp-controller="Admins" asp-action="CreateHall" class="btn btn-success">
-                                        <i class="bi bi-plus-circle"></i> Add Hall
-                                    </a>
-                                </div>
-                            </form>
-                
-            </div>
-        </div>
     </div>
 </div> 
         </div>

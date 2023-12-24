@@ -1,6 +1,7 @@
 ﻿using LSMS.data_access;
 using LSMS.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace LSMS.Controllers
@@ -35,8 +36,15 @@ namespace LSMS.Controllers
 			ViewBag.ErrorMessage = "Invalid userName or password";
 			return RedirectToAction("Logout", "Home");
 		}
-
-		public IActionResult Index()
+        public IActionResult schedule()
+        {
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var loggedIn = dbContext.Students.FirstOrDefault(s => s.SSN == username);
+            List<Lecture> lectures = dbContext.Enrollments.Where(e => e.studentSSN == loggedIn.SSN).Select(e=>e.lecture).ToList(); // Implement GetLectures() to retrieve your lectures from the database or another source
+            return View(lectures);
+        }
+        public IActionResult Index()
         {
             return View();
         }

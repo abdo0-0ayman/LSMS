@@ -27,8 +27,8 @@ namespace LSMS.Services
             GenerateLectureSchedule(lectures, 0);
             foreach (var lecture in lectures)
             {
-                //int hallindex = lecture.hallId.HasValue ? lecture.hallId.Value : 0; // Default value if HallId is null
-                //lecture.hallId = halls[hallindex].id;
+                int hallindex = lecture.hallId!=null ? int.Parse(lecture.hallId) : 0; // Default value if HallId is null
+                lecture.hallId = halls[hallindex].id;
             }
             ApplyChangesToDatabase(lectures);
         }
@@ -80,13 +80,13 @@ namespace LSMS.Services
                     {
                         lectures[index].lectureNum = i;
                         _currentHalls[grid[i]].Add(i);
-                        //lectures[index].hallId = grid[i];
+                        lectures[index].hallId = grid[i].ToString();
                         if (GenerateLectureSchedule(lectures, index + 1))
                         {
                             return true;
                         }
                         _currentHalls[grid[i]].Remove(i);
-                        //lectures[index].hallId = -1;
+                        lectures[index].hallId = null;
                         lectures[index].lectureNum = -1;
                     }
                 }

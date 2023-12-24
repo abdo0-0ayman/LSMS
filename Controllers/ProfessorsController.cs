@@ -56,7 +56,8 @@ namespace LSMS.Controllers
 
         public IActionResult SelectCourses()
         {
-            string username = User.Identity.Name;
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
             var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
             var courses = _dbContext.Courses.ToList();
             ViewBag.Courses = courses;
@@ -105,7 +106,8 @@ namespace LSMS.Controllers
 
         public IActionResult UploadExcelStudent()
         {
-            string username = User.Identity.Name;
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
             // Retrieve the full professor details from the database using dbContext
             var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
             var lecture = _dbContext.Lectures.Where(p => p.professorSSN == loggedIn.SSN).Include(p=>p.course).ToList();
@@ -191,11 +193,16 @@ namespace LSMS.Controllers
                         }
                         foreach(var student in students)
                         {
-                            _dbContext.Enrollments.Add(new Enrollment()
+                            var check = _dbContext.Enrollments.Where(e => e.studentSSN == student.SSN &&
+                            e.lectureId == LectureId).ToList();
+                            if (check.Count==0)
                             {
-                                studentSSN= student.SSN,
-                                lectureId=LectureId
-                            });
+                                _dbContext.Enrollments.Add(new Enrollment()
+                                {
+                                    studentSSN = student.SSN,
+                                    lectureId = LectureId
+                                });
+                            }
                         }
                         await _dbContext.SaveChangesAsync();
 
@@ -205,7 +212,22 @@ namespace LSMS.Controllers
             }
             else
                 ViewBag.Message = "empty";
-            return View();
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            // Retrieve the full professor details from the database using dbContext
+            var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var lecture = _dbContext.Lectures.Where(p => p.professorSSN == loggedIn.SSN).Include(p => p.course).ToList();
+
+            return View(lecture);
+        }
+
+        public IActionResult schedule()
+        {
+            ClaimsPrincipal user = HttpContext.User;
+            string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
+            var loggedIn = _dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            List<Lecture> lectures = _dbContext.Lectures.Where(e=>e.professorSSN == loggedIn.SSN).ToList(); // Implement GetLectures() to retrieve your lectures from the database or another source
+            return View(lectures);
         }
         public IActionResult Index()
         {

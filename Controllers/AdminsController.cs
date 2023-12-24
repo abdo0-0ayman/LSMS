@@ -17,15 +17,15 @@ using System.Security.Claims;
 
 namespace LSMS.Controllers
 {
-	[CustomAuthorize("Admins")]
-	[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-	public class AdminsController : Controller
+    [CustomAuthorize("Admins")]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+    public class AdminsController : Controller
     {
         private readonly IAuthenticationService authService;
         private readonly ApplicationDbContext dbContext;
         private readonly IScheduleGeneratorService scheduleGeneratorService;
 
-        public AdminsController(IAuthenticationService authService ,ApplicationDbContext dbContext, IScheduleGeneratorService scheduleGeneratorService)
+        public AdminsController(IAuthenticationService authService, ApplicationDbContext dbContext, IScheduleGeneratorService scheduleGeneratorService)
         {
             this.authService = authService;
             this.dbContext = dbContext;
@@ -33,23 +33,23 @@ namespace LSMS.Controllers
         }
 
 
-		[CustomAuthorize("Admins")]
-		[ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+        [CustomAuthorize("Admins")]
+        [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Profile()
         {
             ClaimsPrincipal user = HttpContext.User;
             string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
 
-			// Retrieve the full professor details from the database using dbContext
-			var loggedIn = dbContext.Admins.FirstOrDefault(p => p.userName == username);
-			if (loggedIn != null)
-			{
-				// Pass the professor model to the view
-				return View(loggedIn);
-			}
-			ViewBag.ErrorMessage = "Invalid username or password";
-			return RedirectToAction("Logout", "Home");
-		}
+            // Retrieve the full professor details from the database using dbContext
+            var loggedIn = dbContext.Admins.FirstOrDefault(p => p.userName == username);
+            if (loggedIn != null)
+            {
+                // Pass the professor model to the view
+                return View(loggedIn);
+            }
+            ViewBag.ErrorMessage = "Invalid username or password";
+            return RedirectToAction("Logout", "Home");
+        }
 
         public IActionResult UploadExcelStudent()
         {
@@ -85,7 +85,7 @@ namespace LSMS.Controllers
                     using (var reader = ExcelReaderFactory.CreateReader(stream))
                     {
                         var students = new List<Student>();
-                        var users= new List<User>();
+                        var users = new List<User>();
                         do
                         {
                             bool isHeaderSkipped = false;
@@ -107,9 +107,9 @@ namespace LSMS.Controllers
                                     SSN = reader.GetValue(1).ToString(),
                                     phoneNumber = reader.GetValue(2).ToString(),
                                     academicEmail = reader.GetValue(3).ToString(),
-									departmentId = (reader.GetValue(5).ToString()),
-									// Add other properties as needed
-								};
+                                    departmentId = (reader.GetValue(5).ToString()),
+                                    // Add other properties as needed
+                                };
                                 var user = new User
                                 {
                                     userName = reader.GetValue(1).ToString(),
@@ -119,7 +119,7 @@ namespace LSMS.Controllers
                                 };
                                 if (dbContext.Students.Contains(student) == false)
                                     students.Add(student);
-                                if (dbContext.Users.Contains(user)==false)
+                                if (dbContext.Users.Contains(user) == false)
                                     users.Add(user);
                             }
                         } while (reader.NextResult());
@@ -136,86 +136,86 @@ namespace LSMS.Controllers
             return View();
         }
 
-		public IActionResult UploadExcelProfessor()
-		{
-			return View();
-		}
-		[HttpPost]
-		public async Task<IActionResult> UploadExcelProfessor(IFormFile file)
-		{
-			Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        public IActionResult UploadExcelProfessor()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> UploadExcelProfessor(IFormFile file)
+        {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-			if (file != null && file.Length > 0)
-			{
-				var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads\\";
+            if (file != null && file.Length > 0)
+            {
+                var uploadsFolder = $"{Directory.GetCurrentDirectory()}\\wwwroot\\Uploads\\";
 
-				if (!Directory.Exists(uploadsFolder))
-				{
-					Directory.CreateDirectory(uploadsFolder);
-				}
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
 
-				// Create the complete path \\wwwroot\\Uploads\\filename
-				var filePath = Path.Combine(uploadsFolder, file.FileName);
+                // Create the complete path \\wwwroot\\Uploads\\filename
+                var filePath = Path.Combine(uploadsFolder, file.FileName);
 
-				//Copies the content of the uploaded file to the specified file path
-				using (var stream = new FileStream(filePath, FileMode.Create))
-				{
-					await file.CopyToAsync(stream);
-				} 
-				using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
-				{
-					using (var reader = ExcelReaderFactory.CreateReader(stream))
-					{
-						var professors = new List<Professor>();
-						var users = new List<User>();
-						do
-						{
-							bool isHeaderSkipped = false;
+                //Copies the content of the uploaded file to the specified file path
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+                using (var stream = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        var professors = new List<Professor>();
+                        var users = new List<User>();
+                        do
+                        {
+                            bool isHeaderSkipped = false;
 
-							while (reader.Read())
-							{
-								if (!isHeaderSkipped)
-								{
-									isHeaderSkipped = true;
-									continue;
-								}
+                            while (reader.Read())
+                            {
+                                if (!isHeaderSkipped)
+                                {
+                                    isHeaderSkipped = true;
+                                    continue;
+                                }
                                 // Hashing Password
                                 var salt = BCrypt.Net.BCrypt.GenerateSalt();
                                 var hashedPassword = BCrypt.Net.BCrypt.HashPassword(reader.GetValue(3).ToString(), salt);
 
                                 var professor = new Professor
-								{
-									name = reader.GetValue(0).ToString(),
-									SSN = reader.GetValue(1).ToString(),
-									phoneNumber = reader.GetValue(2).ToString(),
-									departmentId= (reader.GetValue(4).ToString()),
-									// Add other properties as needed
-								};
+                                {
+                                    name = reader.GetValue(0).ToString(),
+                                    SSN = reader.GetValue(1).ToString(),
+                                    phoneNumber = reader.GetValue(2).ToString(),
+                                    departmentId = (reader.GetValue(4).ToString()),
+                                    // Add other properties as needed
+                                };
                                 var user = new User
-								{
-									userName = reader.GetValue(1).ToString(),
+                                {
+                                    userName = reader.GetValue(1).ToString(),
                                     Salt = Encoding.UTF8.GetBytes(salt),
                                     PasswordHash = Encoding.UTF8.GetBytes(hashedPassword),
                                     role = "Professors",
-								};
+                                };
                                 if (dbContext.Professors.Contains(professor) == false)
                                     professors.Add(professor);
                                 if (dbContext.Users.Contains(user) == false)
                                     users.Add(user);
                             }
-						} while (reader.NextResult());
-						dbContext.Professors.AddRange(professors);
-						dbContext.Users.AddRange(users);
-						await dbContext.SaveChangesAsync();
+                        } while (reader.NextResult());
+                        dbContext.Professors.AddRange(professors);
+                        dbContext.Users.AddRange(users);
+                        await dbContext.SaveChangesAsync();
 
-						ViewBag.Message = "success";
-					}
-				}
-			}
-			else
-				ViewBag.Message = "empty";
-			return View();
-		}
+                        ViewBag.Message = "success";
+                    }
+                }
+            }
+            else
+                ViewBag.Message = "empty";
+            return View();
+        }
 
 
         public IActionResult UploadExcelCourse()
@@ -272,7 +272,7 @@ namespace LSMS.Controllers
                                 {
                                     id = reader.GetValue(0).ToString(),
                                     name = reader.GetValue(1).ToString(),
-                                    hours= Convert.ToInt32(reader.GetValue(2)),
+                                    hours = Convert.ToInt32(reader.GetValue(2)),
                                     departmentId = departmentId,
                                     // Add other properties as needed
                                 };
@@ -333,7 +333,9 @@ namespace LSMS.Controllers
             var halls = dbContext.Halls.ToList();
             if (halls.Count() * 25 < lectures.Count())
             {
-                // add halls
+                ViewBag.ErrorMessage = "We can't generate schedule with this small number of halls. " +
+                    "please back and add new hall";
+                return View();
             }
             else if (halls.Count() >= dbContext.Departments.Count())
             {
@@ -347,8 +349,11 @@ namespace LSMS.Controllers
                     if (worstlecture + worstintersection > worst)
                         worst = worstlecture + worstintersection;
                 }
-                if (worst > 25) ViewBag.ErrorMessage
-                     = "We can't generate schedule because you exceeded the intersection limit";
+                if (worst > 25)
+                {
+                    ViewBag.ErrorMessage = "We can't generate schedule because you exceeded the intersection limit";
+                    return View();
+                }
                 else scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
             }
             else
@@ -361,7 +366,10 @@ namespace LSMS.Controllers
                         maxCourses = dep.courses.Count();
                     }
                 }
-                if (totalIntersections + maxCourses > 25) ;//-> add halls
+                if (totalIntersections + maxCourses > 25)
+                {
+
+                }
                 else scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
             }
             return RedirectToAction("schedule");
@@ -394,7 +402,7 @@ namespace LSMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDepartment(string id,string name)
+        public async Task<IActionResult> CreateDepartment(string id, string name)
         {
             /*
             if (id == null)
@@ -442,5 +450,150 @@ namespace LSMS.Controllers
             dbContext.SaveChanges();
             return View();
         }
+        public async Task<IActionResult> DeleteDepartment()
+        {
+            try
+            {
+                // Retrieve all records from the table
+                var recordsToDelete = dbContext.Departments.ToList();
+
+                // Remove all records from the DbSet
+                dbContext.Departments.RemoveRange(recordsToDelete);
+
+                // Save changes to the database
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, display an error message, etc.)
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+        }
+
+    
+        public async Task<IActionResult> DeleteStudent()
+        {
+            try
+            {
+                // Retrieve all records from the table
+                var recordsToDelete = dbContext.Students.ToList();
+
+                // Remove all records from the DbSet
+                dbContext.Students.RemoveRange(recordsToDelete);
+
+                // Save changes to the database
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, display an error message, etc.)
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+
+        }
+        public async Task<IActionResult> DeleteProfessor()
+        {
+            try
+            {
+                // Retrieve all records from the table
+                var recordsToDelete = dbContext.Professors.ToList();
+
+                // Remove all records from the DbSet
+                dbContext.Professors.RemoveRange(recordsToDelete);
+
+                // Save changes to the database
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, display an error message, etc.)
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+
+        }
+        public async Task<IActionResult> DeleteHall()
+        {
+            try
+            {
+                // Retrieve all records from the table
+                var recordsToDelete = dbContext.Halls.ToList();
+
+                // Remove all records from the DbSet
+                dbContext.Halls.RemoveRange(recordsToDelete);
+
+                // Save changes to the database
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, display an error message, etc.)
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+
+        }
+        public async Task<IActionResult> DeleteCourse()
+        {
+            try
+            {
+                // Retrieve all records from the table
+                var recordsToDelete = dbContext.Courses.ToList();
+
+                // Remove all records from the DbSet
+                dbContext.Courses.RemoveRange(recordsToDelete);
+
+                // Save changes to the database
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, display an error message, etc.)
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+
+        }
+        public async Task<IActionResult> DeleteLecture()
+        {
+            
+            try
+            {
+                // Retrieve all records from the table
+                var recordsToDelete = dbContext.Lectures.ToList();
+              
+                // Remove all records from the DbSet
+                dbContext.Lectures.RemoveRange(recordsToDelete);
+
+                recordsToDelete = dbContext.Lectures.ToList();
+
+                // Remove all records from the DbSet
+                dbContext.Lectures.RemoveRange(recordsToDelete);
+
+                // Save changes to the database
+                dbContext.SaveChanges();
+
+                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions (log, display an error message, etc.)
+                return RedirectToAction("Error", "Home"); // Redirect to an error page
+            }
+
+        }
+        public async Task<IActionResult> Reset()
+        {
+            return View();
+        }
+
+
     }
 }

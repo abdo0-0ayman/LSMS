@@ -1,0 +1,7 @@
+﻿@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage;
+    </div>
+}
+<a class="btn btn-primary btn-lg w-15" asp-controller="Admins" asp-action="Profile">Back</a>

@@ -1,0 +1,78 @@
+﻿<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    td {
+        position: relative;
+        min-height: 60px;
+    }
+
+    p {
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    button {
+        margin-top: 20px;
+        padding: 10px;
+        cursor: pointer;
+    }
+</style>
+
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@model List<Lecture>
+
+<h2>Schedule</h2>
+<table border="1">
+    <tr>
+        <th>Time/Day</th>
+        <th>Sunday</th>
+        <th>Monday</th>
+        <th>Tuesday</th>
+        <th>Wednesday</th>
+        <th>Thursday</th>
+    </tr>
+
+    @for (int i = 8; i <= 16; i += 2)
+    {
+        <tr>
+            <td>@i:00 - @(i + 2):00</td>
+            @for (int j = 1; j <= 5; j++)
+            {
+                <td>
+                    @{
+                        int time = (i - 8) / 2;
+                        time += (j - 1) * 5;
+                        var lecture = Model.FirstOrDefault(l => l.lectureNum == time);
+                        if (lecture != null)
+                        {
+                            <p>@lecture.id</p>
+                            <p>@lecture.hallId</p>
+                        }
+                        else
+                        {
+                            <p>No Lecture</p>
+                        }
+                    }
+                </td>
+            }
+        </tr>
+    }
+</table>
