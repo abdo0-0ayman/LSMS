@@ -1,32 +1,32 @@
-﻿@model CreateDepartment
+﻿@model CreateCourse
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyId")
 {
     <div class="alert alert-danger" role="alert">
-        You should enter a valid department id
+        You should enter a valid Course id
     </div>
 }
 else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyName")
 {
     <div class="alert alert-danger" role="alert">
-        You should enter a valid department name
+        You should enter a valid Course name
     </div>
 }
 else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "success")
 {
     <div class="alert alert-success" role="alert">
-        The department inserted successfully
+        The Course inserted successfully
     </div>
 }
-else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "This department is already exist")
+else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "This Course is already exist")
 {
     <div class="alert alert-danger" role="alert">
-        This department is already exist
+        This Course is already exist
     </div>
 }
 <div class="row text">
     <div class="col-md-8 offset-2">
         <p>
-            <h1>Add a New Department</h1>
+            <h1>Add a New Course</h1>
         </p>
         <div class="row">
             <div class="col-md-8 offset-2">
@@ -42,33 +42,45 @@ else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == 
                         <span asp-validation-for="id" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="name" class="control-label"></label>
+                        <label asp-for="name" class="control-label"><span class="required">* Course Name</span>:</label>
                         <input asp-for="name" class="form-control" />
                         <span asp-validation-for="name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateDepartment"/>
+                        <label asp-for="hours" class="control-label"><span class="required">* Course Hours</span>:</label>
+                        <input asp-for="hours" class="form-control" />
+                        <span asp-validation-for="hours" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="departmentId" class="control-label"><span class="required">* Department ID</span>:</label>
+                        <input asp-for="departmentId" class="form-control" />
+                        <span asp-validation-for="departmentId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateCourse" />
                     </div>
                 </form>
             </div>
         </div>
+        @*
         <table class="table">
-            <thead>
-                <tr>
-                    <th>Department Id</th>
-                    <th>Department Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var department in ViewBag.Departments as List<Department>)
-                {
-                    <tr>
-                        <td>@department.id</td>
-                        <td>@department.name</td>
-                    </tr>
-                }
-            </tbody>
+        <thead>
+        <tr>
+        <th>Department Id</th>
+        <th>Department Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var department in ViewBag.Departments as List<Department>)
+        {
+        <tr>
+        <td>@department.id</td>
+        <td>@department.name</td>
+        </tr>
+        }
+        </tbody>
         </table>
+        *@
     </div>
 </div>
 <script>
@@ -77,5 +89,7 @@ else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == 
         // Set the input values to null
         document.getElementById("id").value = null;
         document.getElementById("name").value = null;
+        document.getElementById("hours").value = null;
+        document.getElementById("departmentId").value = null;
     });
 </script>

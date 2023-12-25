@@ -1,0 +1,101 @@
+﻿@model CreateStudent
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyId")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid SSN
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyName")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid Student name
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "success")
+{
+    <div class="alert alert-success" role="alert">
+        The Student inserted successfully
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "This Student is already exist")
+{
+    <div class="alert alert-danger" role="alert">
+        This Student is already exist
+    </div>
+}
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Add a New Student</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group text-center">
+                        <img id="ProfilePicturePreview" class="border-info rounded-circle" style="max-width: 150px" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SSN" class="control-label"><span class="required">* SSN</span>:</label>
+                        <input asp-for="SSN" class="form-control" />
+                        <span asp-validation-for="SSN" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="name" class="control-label"><span class="required">* Full Name</span>:</label>
+                        <input asp-for="name" class="form-control" />
+                        <span asp-validation-for="name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="phoneNumber" class="control-label"><span class="required">* Phone Number</span>:</label>
+                        <input asp-for="phoneNumber" class="form-control" />
+                        <span asp-validation-for="phoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="academicEmail" class="control-label"><span class="required">* Academic Email</span>:</label>
+                        <input asp-for="academicEmail" class="form-control" />
+                        <span asp-validation-for="academicEmail" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="departmentId" class="control-label"><span class="required">* Department ID</span>:</label>
+                        <input asp-for="departmentId" class="form-control" />
+                        <span asp-validation-for="departmentId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateStudent" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        @*
+        <table class="table">
+        <thead>
+        <tr>
+        <th>Department Id</th>
+        <th>Department Name</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var department in ViewBag.Departments as List<Department>)
+        {
+        <tr>
+        <td>@department.id</td>
+        <td>@department.name</td>
+        </tr>
+        }
+        </tbody>
+        </table>
+        *@
+    </div>
+</div>
+<script>
+    // Use JavaScript to clear the form fields when the page is loaded or refreshed
+    document.addEventListener("DOMContentLoaded", function () {
+        // Set the input values to null
+        document.getElementById("SSN").value = null;
+        document.getElementById("name").value = null;
+        document.getElementById("phoneNumber").value = null;
+        document.getElementById("academicEmail").value = null;
+        document.getElementById("departmentId").value = null;
+    });
+</script>

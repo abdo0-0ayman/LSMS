@@ -14,6 +14,10 @@ using ExcelDataReader;
 using System.Diagnostics;
 using LSMS.Services;
 using System.Security.Claims;
+using System.Collections.Specialized;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics.Metrics;
+using System.Numerics;
 
 namespace LSMS.Controllers
 {
@@ -423,10 +427,11 @@ namespace LSMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateDepartment(string id, string name)
+        public async Task<IActionResult> CreateDepartment(CreateDepartment department1)
         {
             var departments=dbContext.Departments.ToList();
             ViewBag.Departments = departments;
+            /*
             if (id == null)
             {
                 ViewBag.ErrorMessage = "emptyId";
@@ -437,15 +442,20 @@ namespace LSMS.Controllers
                 ViewBag.ErrorMessage = "emptyName";
                 return View();
             }
-            var checkForDepartmnet = dbContext.Departments.Where(l => l.id == id);
+            */
+            if (!ModelState.IsValid)
+            {
+                return View(department1);
+            }
+            var checkForDepartmnet = dbContext.Departments.Where(l => l.id == department1.id);
             if(checkForDepartmnet.Any())
             {
                 ViewBag.ErrorMessage = "This department is already exist";
                 return View();
             }
             Department department = new Department();
-            department.id = id;
-            department.name = name;
+            department.id = department1.id;
+            department.name = department1.name;
             dbContext.Departments.Add(department);
             dbContext.SaveChanges();
             ViewBag.Message = "success";
@@ -459,11 +469,12 @@ namespace LSMS.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateHall(string id, int capacity)
+        public async Task<IActionResult> CreateHall(CreateHall hall1)
         {
             var halls = dbContext.Halls.ToList();
             ViewBag.Halls = halls;
 
+            /*
             if (id == null)
             {
                 ViewBag.ErrorMessage = "emptyId";
@@ -474,21 +485,157 @@ namespace LSMS.Controllers
                 ViewBag.ErrorMessage = "emptyCapacity";
                 return View();
             }
-            var checkForHall = dbContext.Halls.Where(l => l.id == id);
+            */
+            if (!ModelState.IsValid)
+            {
+                return View(hall1);
+            }
+            var checkForHall = dbContext.Halls.Where(l => l.id == hall1.id);
+
             if (checkForHall.Any())
             {
                 ViewBag.ErrorMessage = "This hall is already exist";
                 return View();
             }
             Hall hall = new Hall();
-            hall.id = id;
-            hall.capacity = capacity;
+            hall.id = hall1.id;
+            hall.capacity = hall1.capacity;
             dbContext.Add(hall);
             dbContext.SaveChanges();
             ViewBag.Message = "success";
             return View();
         }
 
+        public IActionResult CreateProfessor()
+        {
+            var professors = dbContext.Professors.ToList();
+            ViewBag.Professors = professors;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateProfessor(CreateProfessor professor)
+        {
+            var professors = dbContext.Professors.ToList();
+            ViewBag.Professors = professors;
+
+            /*
+            if (professor.SSN == null)
+            {
+                ViewBag.ErrorMessage = "emptyId";
+                return View();
+            }
+            */
+            if (!ModelState.IsValid)
+            {
+                return View(professor);
+            }    
+            var checkForProfessor = dbContext.Professors.Where(l => l.SSN == professor.SSN);
+            if (checkForProfessor.Any())
+            {
+                ViewBag.ErrorMessage = "This Professor is already exist";
+                return View();
+            }
+            Professor professor1 = new Professor();
+            professor1.SSN = professor.SSN;
+            professor1.phoneNumber = professor.phoneNumber;
+            professor1.departmentId = professor.departmentId;
+            professor1.name = professor.name;
+            dbContext.Add(professor1);
+            dbContext.SaveChanges();
+            ViewBag.Message = "success";
+            return View();
+        }
+
+        public IActionResult CreateStudent()
+        {
+            var students = dbContext.Students.ToList();
+            ViewBag.Students = students;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateStudent(CreateStudent student1)
+        {
+            var students = dbContext.Students.ToList();
+            ViewBag.Students = students;
+
+            /*
+            if (SSN.Length!=16)
+            {
+                ModelState.AddModelError("SSN", "Please Enter a valid SSN");
+                return View();
+            }
+            */
+            /*
+            if (SSN == null)
+            {
+                ViewBag.ErrorMessage = "emptyId";
+                return View();
+            }
+            */
+            if (!ModelState.IsValid)
+            {
+                return View(student1);
+            }
+            var checkForStudent = dbContext.Students.Where(l => l.SSN == student1.SSN);
+            if (checkForStudent.Any())
+            {
+                ViewBag.ErrorMessage = "This Student is already exist";
+                return View();
+            }
+            Student student= new Student();
+            student.SSN = student1.SSN;
+            student.phoneNumber = student1.phoneNumber;
+            student.academicEmail = student1.academicEmail;
+            student.departmentId = student1.departmentId;
+            student.name = student1.name;
+            dbContext.Add(student);
+            dbContext.SaveChanges();
+            ViewBag.Message = "success";
+            return View();
+        }
+
+        public IActionResult CreateCourse()
+        {
+            var courses = dbContext.Courses.ToList();
+            ViewBag.Courses = courses;
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCourse(CreateCourse course1)
+        {
+            var courses = dbContext.Courses.ToList();
+            ViewBag.Courses = courses;
+            /*
+            if (id == null)
+            {
+                ViewBag.ErrorMessage = "emptyId";
+                return View();
+            }
+            */
+            if (!ModelState.IsValid)
+            {
+                return View(course1);
+            }
+
+            var checkForCourse = dbContext.Courses.Where(l => l.id == course1.id);
+            if (checkForCourse.Any())
+            {
+                ViewBag.ErrorMessage = "This Course is already exist";
+                return View();
+            }
+            Course course = new Course();
+            course.id = course1.id;
+            course.name = course1.name;
+            course.hours = course1.hours;
+            course.departmentId = course1.departmentId;
+            dbContext.Add(course);
+            dbContext.SaveChanges();
+            ViewBag.Message = "success";
+            return View();
+        }
 
         //public async Task<IActionResult> DeleteDepartment()
         //{
@@ -512,7 +659,7 @@ namespace LSMS.Controllers
         //    }
         //}
 
-    
+
         //public async Task<IActionResult> DeleteStudent()
         //{
         //    try
@@ -603,12 +750,12 @@ namespace LSMS.Controllers
         //}
         //public async Task<IActionResult> DeleteLecture()
         //{
-            
+
         //    try
         //    {
         //        // Retrieve all records from the table
         //        var recordsToDelete = dbContext.Lectures.ToList();
-              
+
         //        // Remove all records from the DbSet
         //        dbContext.Lectures.RemoveRange(recordsToDelete);
 

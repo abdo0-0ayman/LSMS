@@ -1,4 +1,4 @@
-﻿@model Hall
+﻿@model CreateHall
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyId")
 {
     <div class="alert alert-danger" role="alert">
@@ -76,3 +76,11 @@ else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyCapa
 
     </div>
 </div>
+<script>
+    // Use JavaScript to clear the form fields when the page is loaded or refreshed
+    document.addEventListener("DOMContentLoaded", function () {
+        // Set the input values to null
+        document.getElementById("id").value = null;
+        document.getElementById("capacity").value = null;
+    });
+</script>

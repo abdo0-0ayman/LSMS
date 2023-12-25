@@ -2,7 +2,7 @@
 
 namespace LSMS.Models
 {
-    public class Student
+    public class CreateStudent
     {
         [Key]
         [Display(Name = "SSN")]
@@ -22,10 +22,5 @@ namespace LSMS.Models
         // Relation with Department
         [Required(ErrorMessage = "Department ID is required")]
         public string departmentId { get; set; }
-        public virtual Department department { get; set; }
-        //relation with CourseProfessor
-        public virtual List<Lecture> lectures { get; set; }
-        public virtual List<Enrollment> enrollments { get; set; }
-
     }
 }

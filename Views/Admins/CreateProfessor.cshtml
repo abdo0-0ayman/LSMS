@@ -1,32 +1,32 @@
-﻿@model CreateDepartment
+﻿@model CreateProfessor
 @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyId")
 {
     <div class="alert alert-danger" role="alert">
-        You should enter a valid department id
+        You should enter a valid SSN
     </div>
 }
 else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyName")
 {
     <div class="alert alert-danger" role="alert">
-        You should enter a valid department name
+        You should enter a valid Professor name
     </div>
 }
 else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "success")
 {
     <div class="alert alert-success" role="alert">
-        The department inserted successfully
+        The Professor inserted successfully
     </div>
 }
-else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "This department is already exist")
+else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "This Professor is already exist")
 {
     <div class="alert alert-danger" role="alert">
-        This department is already exist
+        This Professor is already exist
     </div>
 }
 <div class="row text">
     <div class="col-md-8 offset-2">
         <p>
-            <h1>Add a New Department</h1>
+            <h1>Add a New Professor</h1>
         </p>
         <div class="row">
             <div class="col-md-8 offset-2">
@@ -37,21 +37,32 @@ else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == 
                         <img id="ProfilePicturePreview" class="border-info rounded-circle" style="max-width: 150px" />
                     </div>
                     <div class="form-group">
-                        <label asp-for="id" class="control-label"><span class="required">* ID</span>:</label>
-                        <input asp-for="id" class="form-control" />
-                        <span asp-validation-for="id" class="text-danger"></span>
+                        <label asp-for="SSN" class="control-label"><span class="required">* SSN</span>:</label>
+                        <input asp-for="SSN" class="form-control" />
+                        <span asp-validation-for="SSN" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="name" class="control-label"></label>
+                        <label asp-for="name" class="control-label"><span class="required">* Full Name</span>:</label>
                         <input asp-for="name" class="form-control" />
                         <span asp-validation-for="name" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateDepartment"/>
+                        <label asp-for="phoneNumber" class="control-label"><span class="required">* Phone Number</span>:</label>
+                        <input asp-for="phoneNumber" class="form-control" />
+                        <span asp-validation-for="phoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="departmentId" class="control-label"><span class="required">* Department ID</span>:</label>
+                        <input asp-for="departmentId" class="form-control" />
+                        <span asp-validation-for="departmentId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateProfessor" />
                     </div>
                 </form>
             </div>
         </div>
+        @*
         <table class="table">
             <thead>
                 <tr>
@@ -69,13 +80,16 @@ else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == 
                 }
             </tbody>
         </table>
+        *@
     </div>
 </div>
 <script>
     // Use JavaScript to clear the form fields when the page is loaded or refreshed
     document.addEventListener("DOMContentLoaded", function () {
         // Set the input values to null
-        document.getElementById("id").value = null;
+        document.getElementById("SSN").value = null;
         document.getElementById("name").value = null;
+        document.getElementById("phoneNumber").value = null;
+        document.getElementById("departmentId").value = null;
     });
 </script>
