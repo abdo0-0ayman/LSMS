@@ -1,8 +1,26 @@
 ﻿@model Hall
-@if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyId")
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyId")
 {
     <div class="alert alert-danger" role="alert">
         You should enter a valid hall id
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "emptyCapacity")
+{
+    <div class="alert alert-danger" role="alert">
+        You should enter a valid hall capacity
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "success")
+{
+    <div class="alert alert-success" role="alert">
+        The hall inserted successfully
+    </div>
+}
+else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "This hall is already exist")
+{
+    <div class="alert alert-danger" role="alert">
+        This hall is already exist
     </div>
 }
 else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyCapacity")
@@ -39,6 +57,22 @@ else if (!string.IsNullOrEmpty(ViewBag.Message) && ViewBag.Message == "emptyCapa
                     </div>
                 </form>
             </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Hall Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var department in ViewBag.Halls as List<Hall>)
+                    {
+                        <tr>
+                            <td>@department.id</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
+
     </div>
 </div>

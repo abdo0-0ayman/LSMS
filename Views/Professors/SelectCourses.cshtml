@@ -1,7 +1,7 @@
 ﻿@model Professor
 
 <h4>@Model.name</h4>
-<form asp-action="SelectCourses" method="post">
+<form asp-controller="Professors" asp-action="SelectCourses" method="post">
     <input type="hidden" name="professorSSN" value="@Model.SSN" />
 
     <label>Select Courses:</label>

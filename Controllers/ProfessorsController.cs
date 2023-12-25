@@ -25,7 +25,7 @@ namespace LSMS.Controllers
         public ProfessorsController(IAuthenticationService authService, ApplicationDbContext dbContext)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
-            dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         [CustomAuthorize("Professors")]
@@ -175,6 +175,7 @@ namespace LSMS.Controllers
                                         departmentId = studentFind.departmentId,
                                         lectureId = LectureId
                                     };
+                                    var lecture1=dbContext.Lectures.FirstOrDefault(l=>l.id==LectureId);
                                     if (!intersections.Contains(intersection))
                                     {
                                         intersections.Add(intersection);
@@ -220,13 +221,27 @@ namespace LSMS.Controllers
 
             return View(lecture);
         }
-
+        private bool checkForSchedule()
+        {
+            var lectures = dbContext.Lectures.Where(e => e.hallId == null).Select(x=>x).ToList();
+            if (lectures.Count()==0)
+            {
+                return true;
+            }
+            return false;
+        }
         public IActionResult schedule()
         {
+            var lectures = new List<Lecture>();
+            if (checkForSchedule())
+            {
+                ViewBag.ErrorMessage = "The schedule not generated yet";
+                return View(lectures);
+            }
             ClaimsPrincipal user = HttpContext.User;
             string username = user.FindFirstValue(ClaimTypes.NameIdentifier);
             var loggedIn = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
-            List<Lecture> lectures = dbContext.Lectures.Where(e=>e.professorSSN == loggedIn.SSN).ToList(); // Implement GetLectures() to retrieve your lectures from the database or another source
+            lectures = dbContext.Lectures.Where(e=>e.professorSSN == loggedIn.SSN).ToList(); // Implement GetLectures() to retrieve your lectures from the database or another source
             return View(lectures);
         }
         public IActionResult Index()

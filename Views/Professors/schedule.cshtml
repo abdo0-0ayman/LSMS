@@ -38,7 +38,12 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 
 @model List<Lecture>
-
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage;
+    </div>
+}
 <h2>Schedule</h2>
     <table border="1">
         <tr>

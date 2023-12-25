@@ -44,6 +44,12 @@
 @{
     var hallList = (ViewBag.Halls as List<Hall>).Select(l => new SelectListItem { Value = l.id.ToString(),Text=l.id.ToString() });
 }
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) )
+{
+    <div class="alert alert-danger" role="alert">
+        @ViewBag.ErrorMessage;
+    </div>
+}
 @using (Html.BeginForm("schedule", "Admins", FormMethod.Post))
 {
 

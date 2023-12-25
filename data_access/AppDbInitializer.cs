@@ -12,175 +12,6 @@ namespace LSMS.data_access
             {
                 var context=serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 context.Database.EnsureCreated();
-                if (!context.Courses.Any())
-                {
-                    context.Courses.AddRange(new List<Course>()
-                                {
-                                    new Course()
-                                    {
-                                        id="CS-1-1",
-                                        name="Discrete Mathematics",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-1-2",
-                                        name="Programming Fundamentals",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-1-3",
-                                        name="Object Oriented Programming",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-2-1",
-                                        name="Probability And Statistics",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-2-2",
-                                        name="Visual Programming",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-2-3",
-                                        name="Software Engineering",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IT-1-1",
-                                        name="Data Communication",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IT-1-2",
-                                        name="Data Communication",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IT-1-3",
-                                        name="Network Fundamentals",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IT-2-1",
-                                        name="Data Communication",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IT-2-2",
-                                        name="Network Fundamentals",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IT-2-3",
-                                        name="Network Fundamentals",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IS-1-1",
-                                        name="Information System",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IS-1-2",
-                                        name="System Analysis And Design",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IS-1-3",
-                                        name="Information System",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IS-2-1",
-                                        name="System Analysis And Design",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IS-2-2",
-                                        name="Information System",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="IS-2-3",
-                                        name="System Analysis And Design",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="MM-1-1",
-                                        name="Information System",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="MM-1-2",
-                                        name="System Analysis And Design",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="MM-1-3",
-                                        name="Information System",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="MM-2-1",
-                                        name="System Analysis And Design",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="MM-2-2",
-                                        name="Information System",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="MM-2-3",
-                                        name="System Analysis And Design",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-3-1",
-                                        name="Cloud Computing",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-3-2",
-                                        name="Machine Learning",
-                                        hours=3,
-                                    },
-                                    new Course()
-                                    {
-                                        id="CS-3-3",
-                                        name="Data Structure And Algorithms",
-                                        hours=3,
-                                    }
-                                });
-                    context.SaveChanges();
-                }
                 if (!context.Departments.Any())
                 {
                     context.Departments.AddRange(new List<Department>()
@@ -211,6 +42,192 @@ namespace LSMS.data_access
                                 });
                     context.SaveChanges();
                 }
+                if (!context.Courses.Any())
+                {
+                    context.Courses.AddRange(new List<Course>()
+                                {
+                                    new Course()
+                                    {
+                                        id="CS-1-1",
+                                        name="Discrete Mathematics",
+                                        departmentId="CS",
+                                        hours=3,
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-1-2",
+                                        name="Programming Fundamentals",
+
+                                    departmentId="CS",
+                                        hours=3,
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-1-3",
+                                        name="Object Oriented Programming",
+                                        departmentId="CS",
+                                        hours=3,
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-2-1",
+                                        name="Probability And Statistics",
+                                        departmentId="CS",
+                                        hours=3,
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-2-2",
+                                        name="Visual Programming",
+                                        departmentId="CS",
+                                        hours=3,
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-2-3",
+                                        name="Software Engineering",
+                                        departmentId="CS",
+                                        hours=3,
+                                    },
+                                    new Course()
+                                    {
+                                        id="IT-1-1",
+                                        name="Data Communication",
+                                        hours=3,
+                                        departmentId="IT",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IT-1-2",
+                                        name="Data Communication",
+                                        hours=3,
+                                          departmentId="IT",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IT-1-3",
+                                        name="Network Fundamentals",
+                                        hours=3,
+                                          departmentId="IT",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IT-2-1",
+                                        name="Data Communication",
+                                        hours=3,
+                                          departmentId="IT",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IT-2-2",
+                                        name="Network Fundamentals",
+                                        hours=3,
+                                          departmentId="IT",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IT-2-3",
+                                        name="Network Fundamentals",
+                                        hours=3,
+                                          departmentId="IT",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IS-1-1",
+                                        name="Information System",
+                                        hours=3,
+                                          departmentId="IS",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IS-1-2",
+                                        name="System Analysis And Design",
+                                        hours=3,
+                                          departmentId="IS",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IS-1-3",
+                                        name="Information System",
+                                        hours=3,  departmentId="IS",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IS-2-1",
+                                        name="System Analysis And Design",
+                                        hours=3,
+                                         departmentId="IS",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IS-2-2",
+                                        name="Information System",
+                                        hours=3, departmentId="IS",
+                                    },
+                                    new Course()
+                                    {
+                                        id="IS-2-3",
+                                        name="System Analysis And Design",
+                                        hours=3, departmentId="IS",
+                                    },
+                                    new Course()
+                                    {
+                                        id="MM-1-1",
+                                        name="Information System",
+                                        hours=3, departmentId="MM",
+                                    },
+                                    new Course()
+                                    {
+                                        id="MM-1-2",
+                                        name="System Analysis And Design",
+                                        hours=3,departmentId="MM",
+                                    },
+                                    new Course()
+                                    {
+                                        id="MM-1-3",
+                                        name="Information System",
+                                        hours=3,departmentId="MM",
+                                    },
+                                    new Course()
+                                    {
+                                        id="MM-2-1",
+                                        name="System Analysis And Design",
+                                        hours=3,departmentId="MM",
+                                    },
+                                    new Course()
+                                    {
+                                        id="MM-2-2",
+                                        name="Information System",
+                                        hours=3,departmentId="MM",
+                                    },
+                                    new Course()
+                                    {
+                                        id="MM-2-3",
+                                        name="System Analysis And Design",
+                                        hours=3,departmentId="MM",
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-3-1",
+                                        name="Cloud Computing",
+                                        hours=3,departmentId="CS"
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-3-2",
+                                        name="Machine Learning",
+                                        hours=3,departmentId="CS"
+                                    },
+                                    new Course()
+                                    {
+                                        id="CS-3-3",
+                                        name="Data Structure And Algorithms",
+                                        hours=3,departmentId="CS"
+                                    }
+                                }) ;
+                    context.SaveChanges();
+                }
+                
 
                 if (!context.Admins.Any())
                 {

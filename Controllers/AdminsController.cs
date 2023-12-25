@@ -357,8 +357,10 @@ namespace LSMS.Controllers
                 else scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
             }
             else
-            {
+            {   
                 int totalIntersections = dbContext.Intersections.Count(), maxCourses = 0;
+                if (halls.Count() == 1) 
+                    totalIntersections = 0;
                 foreach (var dep in dbContext.Departments.Include(l => l.courses).ToList())
                 {
                     if (dep.courses.Count() > maxCourses)
@@ -368,15 +370,32 @@ namespace LSMS.Controllers
                 }
                 if (totalIntersections + maxCourses > 25)
                 {
-
+                    ViewBag.ErrorMessage = "We can't generate schedule because you exceeded the intersection limit";
+                    return View();
                 }
                 else scheduleGeneratorService.GenerateScheduleBacktrack(lectures, halls);
             }
             return RedirectToAction("schedule");
         }
+        private bool checkForSchedule()
+        {
+            var lectures = dbContext.Lectures.Where(e => e.hallId == null).Select(x => x).ToList();
+            if (lectures.Count() != 0)
+            {
+                return true;
+            }
+            return false;
+        }
         public IActionResult schedule()
         {
+            
             var lectures = new List<Lecture>();
+            if (checkForSchedule())
+            {
+                ViewBag.ErrorMessage = "The schedule not generated yet";
+                ViewBag.Halls=new List<Hall>();
+                return View(lectures);
+            }
             var halls = dbContext.Halls.ToList();
             ViewBag.Halls = halls;
             return View(lectures);
@@ -398,201 +417,222 @@ namespace LSMS.Controllers
 
         public IActionResult CreateDepartment()
         {
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateDepartment(string id, string name)
         {
-            /*
+            var departments=dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
             if (id == null)
             {
-                //ViewBag.Message = "emptyId";
+                ViewBag.ErrorMessage = "emptyId";
                 return View();
             }
             else if (name == null)
             {
-                //ViewBag.Message = "emptyName";
+                ViewBag.ErrorMessage = "emptyName";
                 return View();
             }
-            */
+            var checkForDepartmnet = dbContext.Departments.Where(l => l.id == id);
+            if(checkForDepartmnet.Any())
+            {
+                ViewBag.ErrorMessage = "This department is already exist";
+                return View();
+            }
             Department department = new Department();
             department.id = id;
             department.name = name;
             dbContext.Departments.Add(department);
             dbContext.SaveChanges();
+            ViewBag.Message = "success";
             return View();
         }
         public IActionResult CreateHall()
         {
+            var halls = dbContext.Halls.ToList();
+            ViewBag.Halls = halls;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateHall(string id, int capacity)
         {
-            /*
+            var halls = dbContext.Halls.ToList();
+            ViewBag.Halls = halls;
+
             if (id == null)
             {
-                ViewBag.Message = "emptyId";
+                ViewBag.ErrorMessage = "emptyId";
                 return View();
             }
             else if (capacity<=50)
             {
-                ViewBag.Message = "emptyCapacity";
+                ViewBag.ErrorMessage = "emptyCapacity";
                 return View();
             }
-            */
+            var checkForHall = dbContext.Halls.Where(l => l.id == id);
+            if (checkForHall.Any())
+            {
+                ViewBag.ErrorMessage = "This hall is already exist";
+                return View();
+            }
             Hall hall = new Hall();
             hall.id = id;
             hall.capacity = capacity;
             dbContext.Add(hall);
             dbContext.SaveChanges();
+            ViewBag.Message = "success";
             return View();
         }
-        public async Task<IActionResult> DeleteDepartment()
-        {
-            try
-            {
-                // Retrieve all records from the table
-                var recordsToDelete = dbContext.Departments.ToList();
 
-                // Remove all records from the DbSet
-                dbContext.Departments.RemoveRange(recordsToDelete);
 
-                // Save changes to the database
-                dbContext.SaveChanges();
+        //public async Task<IActionResult> DeleteDepartment()
+        //{
+        //    try
+        //    {
+        //        // Retrieve all records from the table
+        //        var recordsToDelete = dbContext.Departments.ToList();
 
-                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (log, display an error message, etc.)
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
-        }
+        //        // Remove all records from the DbSet
+        //        dbContext.Departments.RemoveRange(recordsToDelete);
+
+        //        // Save changes to the database
+        //        dbContext.SaveChanges();
+
+        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions (log, display an error message, etc.)
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
+        //}
 
     
-        public async Task<IActionResult> DeleteStudent()
-        {
-            try
-            {
-                // Retrieve all records from the table
-                var recordsToDelete = dbContext.Students.ToList();
+        //public async Task<IActionResult> DeleteStudent()
+        //{
+        //    try
+        //    {
+        //        // Retrieve all records from the table
+        //        var recordsToDelete = dbContext.Students.ToList();
 
-                // Remove all records from the DbSet
-                dbContext.Students.RemoveRange(recordsToDelete);
+        //        // Remove all records from the DbSet
+        //        dbContext.Students.RemoveRange(recordsToDelete);
 
-                // Save changes to the database
-                dbContext.SaveChanges();
+        //        // Save changes to the database
+        //        dbContext.SaveChanges();
 
-                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (log, display an error message, etc.)
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
+        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions (log, display an error message, etc.)
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
 
-        }
-        public async Task<IActionResult> DeleteProfessor()
-        {
-            try
-            {
-                // Retrieve all records from the table
-                var recordsToDelete = dbContext.Professors.ToList();
+        //}
+        //public async Task<IActionResult> DeleteProfessor()
+        //{
+        //    try
+        //    {
+        //        // Retrieve all records from the table
+        //        var recordsToDelete = dbContext.Professors.ToList();
 
-                // Remove all records from the DbSet
-                dbContext.Professors.RemoveRange(recordsToDelete);
+        //        // Remove all records from the DbSet
+        //        dbContext.Professors.RemoveRange(recordsToDelete);
 
-                // Save changes to the database
-                dbContext.SaveChanges();
+        //        // Save changes to the database
+        //        dbContext.SaveChanges();
 
-                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (log, display an error message, etc.)
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
+        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions (log, display an error message, etc.)
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
 
-        }
-        public async Task<IActionResult> DeleteHall()
-        {
-            try
-            {
-                // Retrieve all records from the table
-                var recordsToDelete = dbContext.Halls.ToList();
+        //}
+        //public async Task<IActionResult> DeleteHall()
+        //{
+        //    try
+        //    {
+        //        // Retrieve all records from the table
+        //        var recordsToDelete = dbContext.Halls.ToList();
 
-                // Remove all records from the DbSet
-                dbContext.Halls.RemoveRange(recordsToDelete);
+        //        // Remove all records from the DbSet
+        //        dbContext.Halls.RemoveRange(recordsToDelete);
 
-                // Save changes to the database
-                dbContext.SaveChanges();
+        //        // Save changes to the database
+        //        dbContext.SaveChanges();
 
-                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (log, display an error message, etc.)
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
+        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions (log, display an error message, etc.)
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
 
-        }
-        public async Task<IActionResult> DeleteCourse()
-        {
-            try
-            {
-                // Retrieve all records from the table
-                var recordsToDelete = dbContext.Courses.ToList();
+        //}
+        //public async Task<IActionResult> DeleteCourse()
+        //{
+        //    try
+        //    {
+        //        // Retrieve all records from the table
+        //        var recordsToDelete = dbContext.Courses.ToList();
 
-                // Remove all records from the DbSet
-                dbContext.Courses.RemoveRange(recordsToDelete);
+        //        // Remove all records from the DbSet
+        //        dbContext.Courses.RemoveRange(recordsToDelete);
 
-                // Save changes to the database
-                dbContext.SaveChanges();
+        //        // Save changes to the database
+        //        dbContext.SaveChanges();
 
-                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (log, display an error message, etc.)
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
+        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions (log, display an error message, etc.)
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
 
-        }
-        public async Task<IActionResult> DeleteLecture()
-        {
+        //}
+        //public async Task<IActionResult> DeleteLecture()
+        //{
             
-            try
-            {
-                // Retrieve all records from the table
-                var recordsToDelete = dbContext.Lectures.ToList();
+        //    try
+        //    {
+        //        // Retrieve all records from the table
+        //        var recordsToDelete = dbContext.Lectures.ToList();
               
-                // Remove all records from the DbSet
-                dbContext.Lectures.RemoveRange(recordsToDelete);
+        //        // Remove all records from the DbSet
+        //        dbContext.Lectures.RemoveRange(recordsToDelete);
 
-                recordsToDelete = dbContext.Lectures.ToList();
+        //        recordsToDelete = dbContext.Lectures.ToList();
 
-                // Remove all records from the DbSet
-                dbContext.Lectures.RemoveRange(recordsToDelete);
+        //        // Remove all records from the DbSet
+        //        dbContext.Lectures.RemoveRange(recordsToDelete);
 
-                // Save changes to the database
-                dbContext.SaveChanges();
+        //        // Save changes to the database
+        //        dbContext.SaveChanges();
 
-                return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-            }
-            catch (Exception ex)
-            {
-                // Handle exceptions (log, display an error message, etc.)
-                return RedirectToAction("Error", "Home"); // Redirect to an error page
-            }
+        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Handle exceptions (log, display an error message, etc.)
+        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
+        //    }
 
-        }
-        public async Task<IActionResult> Reset()
-        {
-            return View();
-        }
+        //}
+        //public async Task<IActionResult> Reset()
+        //{
+        //    return View();
+        //}
 
 
     }
