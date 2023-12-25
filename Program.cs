@@ -27,6 +27,7 @@ namespace LSMS
             builder.Services.AddScoped<ApplicationDbContext>(); // Add appropriate lifetime for ApplicationDbContext
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
             builder.Services.AddScoped<IScheduleGeneratorService, ScheduleGeneratorService>();
+            builder.Services.AddScoped<IUpdateService, UpdateService>();
 
 
 

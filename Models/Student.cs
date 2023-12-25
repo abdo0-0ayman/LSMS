@@ -7,6 +7,7 @@ namespace LSMS.Models
         [Required]
         [Key]
         public string SSN { get; set; }
+        [Required]
         public string name { get; set; }
         public string phoneNumber { get; set; }
         public string academicEmail { get; set; }
