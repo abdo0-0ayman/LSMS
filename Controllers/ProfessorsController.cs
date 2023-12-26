@@ -21,11 +21,14 @@ namespace LSMS.Controllers
 
         private readonly IAuthenticationService _authService;
         private readonly ApplicationDbContext dbContext;
+        private readonly IUpdateService updateService;
 
-        public ProfessorsController(IAuthenticationService authService, ApplicationDbContext dbContext)
+
+        public ProfessorsController(IAuthenticationService authService, ApplicationDbContext dbContext, IUpdateService updateService)
         {
             _authService = authService ?? throw new ArgumentNullException(nameof(authService));
             this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
+            this.updateService = updateService;
         }
 
         [CustomAuthorize("Professors")]
@@ -244,9 +247,74 @@ namespace LSMS.Controllers
             lectures = dbContext.Lectures.Where(e=>e.professorSSN == loggedIn.SSN).ToList(); // Implement GetLectures() to retrieve your lectures from the database or another source
             return View(lectures);
         }
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult editProfile()
         {
-            return View();
+            // Retrieve the user's current profile information from the database
+            // You may use the logged-in user's username or ID to fetch the user data
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var professor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var model = new EditModel()
+            {
+                name = professor.name,
+                phoneNumber = professor.phoneNumber,
+                SSN=professor.SSN,
+                OldPassword = "00000000"
+                ,
+                ConfirmPassword = "00000000",
+                NewPassword = "00000000"
+            };
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult editProfile (EditModel professor)
+        {
+            if(ModelState.IsValid) {
+                updateService.UpdateProfessor(professor);
+                return RedirectToAction("Profile");
+            }
+
+            return View(professor);
+        }
+        public IActionResult ChangePassword()
+        {
+            var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var professor = dbContext.Professors.FirstOrDefault(p => p.SSN == username);
+            var model = new EditModel()
+            {
+                name = professor.name,
+                phoneNumber = professor.phoneNumber,
+                SSN = professor.SSN,
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(EditModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Retrieve the current user from the database
+                var username = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = dbContext.Users.FirstOrDefault(p => p.userName == username);
+
+                // Verify the old password
+                var hashedOldPassword = Encoding.UTF8.GetString(user.PasswordHash);
+                if (!(BCrypt.Net.BCrypt.Verify(model.OldPassword, hashedOldPassword)))
+                {
+                    ViewBag.ErrorMessage = "Incorrect old password.";
+                    return View(model);
+                }
+
+                // Update the password
+                updateService.ResetPassword(user.userName, model.NewPassword);
+
+                // Redirect to the profile or another secure page
+                return RedirectToAction("Profile", User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Role)?.Value);
+            }
+
+            return View(model);
         }
     }
 }
+

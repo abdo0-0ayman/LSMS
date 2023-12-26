@@ -9,8 +9,6 @@ namespace LSMS.Models
         [Required(ErrorMessage = "The Professor should have a SSN")]
         [StringLength(16, ErrorMessage = "Please Enter a valid SSN", MinimumLength = 16)]
         public string SSN { get; set; }
-        [Display(Name = "Full Name")]
-        [Required(ErrorMessage = "The full name is required ")]
         public string name { get; set; }
         [Display(Name = "Phone Number")]
         [Required(ErrorMessage = "The phone number is required")]
