@@ -1,0 +1,32 @@
+﻿@model List<LSMS.Models.Professor>
+
+@{
+    ViewData["Title"] = "Student List";
+}
+
+<h2>Professors List</h2>
+<h1>number of professors : @Model.Count()</h1>
+<div class="row mt-3">
+    <div class="col-4">
+        <a class="btn btn-primary btn-sm w-50" asp-action="CreateProfessor">Add new Professor</a>
+    </div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Professor ID</th>
+            <th>Professor Name</th>
+            <th>Department Name</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var professor in Model)
+        {
+            <tr>
+                <td>@professor.SSN</td>
+                <td>@professor.name</td>
+                <td>@professor.department.name</td>
+            </tr>
+        }
+    </tbody>
+</table>

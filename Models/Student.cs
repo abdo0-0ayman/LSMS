@@ -6,8 +6,6 @@ namespace LSMS.Models
     {
         [Key]
         [Display(Name = "SSN")]
-        [Required(ErrorMessage = "The Professor should have a SSN")]
-        [StringLength(16, ErrorMessage = "Please Enter a valid SSN", MinimumLength = 16)]
         public string SSN { get; set; }
         public string name { get; set; }
         [Display(Name = "Phone Number")]
@@ -15,6 +13,8 @@ namespace LSMS.Models
         public string phoneNumber { get; set; }
         [Required(ErrorMessage = "Academic Email is required")]
         public string academicEmail { get; set; }
+        public string? ProfilePicturePath { get; set; }
+
         //public string password { get; set; }
 
         // Relation with Department

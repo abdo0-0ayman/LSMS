@@ -43,7 +43,7 @@ namespace LSMS.Controllers
         private bool checkForSchedule()
         {
             var lectures = dbContext.Lectures.Where(e => e.hallId == null).Select(x => x).ToList();
-            if (lectures.Count() != 0)
+            if (lectures.Count() != 0 || !dbContext.Lectures.Any())
             {
                 return true;
             }

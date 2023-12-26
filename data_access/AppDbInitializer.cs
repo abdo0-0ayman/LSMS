@@ -270,7 +270,7 @@ namespace LSMS.data_access
                     });
                     context.SaveChanges();
                 }
-                /*
+                
                 if (!context.Lectures.Any() && context.Professors.Any())
                 {
                     context.Lectures.AddRange(new List<Lecture>()
@@ -462,7 +462,7 @@ namespace LSMS.data_access
                     context.SaveChanges();
 
                 }
-                */
+                
                 //            if(!context.Halls.Any())
                 /*{
                     context.Halls.AddRange(new List<Hall>()

@@ -18,6 +18,8 @@ using System.Collections.Specialized;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics.Metrics;
 using System.Numerics;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace LSMS.Controllers
 {
@@ -330,6 +332,18 @@ namespace LSMS.Controllers
             return View(student);
         }
 
+
+        public ActionResult ProfessorsEnrolled()
+        {
+            var professors = dbContext.Professors.Include(s => s.department).ToList();
+            if (professors.Count() != 0)
+            {
+                return View(professors);
+            }
+            ViewBag.ErrorMessage = "there is no students";
+            return View(professors);
+        }
+
         public IActionResult GenerateSchedule()
         {
             // Call your schedule generation logic
@@ -384,7 +398,7 @@ namespace LSMS.Controllers
         private bool checkForSchedule()
         {
             var lectures = dbContext.Lectures.Where(e => e.hallId == null).Select(x => x).ToList();
-            if (lectures.Count() != 0)
+            if (lectures.Count() != 0||!dbContext.Lectures.Any())
             {
                 return true;
             }
@@ -508,16 +522,16 @@ namespace LSMS.Controllers
 
         public IActionResult CreateProfessor()
         {
-            var professors = dbContext.Professors.ToList();
-            ViewBag.Professors = professors;
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateProfessor(CreateProfessor professor)
         {
-            var professors = dbContext.Professors.ToList();
-            ViewBag.Professors = professors;
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
 
             /*
             if (professor.SSN == null)
@@ -549,16 +563,16 @@ namespace LSMS.Controllers
 
         public IActionResult CreateStudent()
         {
-            var students = dbContext.Students.ToList();
-            ViewBag.Students = students;
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateStudent(CreateStudent student1)
+        public async Task<IActionResult> CreateStudent(CreateStudent student1 )
         {
-            var students = dbContext.Students.ToList();
-            ViewBag.Students = students;
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
 
             /*
             if (SSN.Length!=16)
@@ -578,6 +592,7 @@ namespace LSMS.Controllers
             {
                 return View(student1);
             }
+
             var checkForStudent = dbContext.Students.Where(l => l.SSN == student1.SSN);
             if (checkForStudent.Any())
             {
@@ -600,6 +615,8 @@ namespace LSMS.Controllers
         {
             var courses = dbContext.Courses.ToList();
             ViewBag.Courses = courses;
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
             return View();
         }
 
@@ -608,6 +625,8 @@ namespace LSMS.Controllers
         {
             var courses = dbContext.Courses.ToList();
             ViewBag.Courses = courses;
+            var departments = dbContext.Departments.ToList();
+            ViewBag.Departments = departments;
             /*
             if (id == null)
             {
@@ -635,6 +654,17 @@ namespace LSMS.Controllers
             dbContext.SaveChanges();
             ViewBag.Message = "success";
             return View();
+        }
+
+        public ActionResult CourseView()
+        {
+            var course = dbContext.Courses.Include(s => s.department).ToList();
+            if (course.Count() != 0)
+            {
+                return View(course);
+            }
+            ViewBag.ErrorMessage = "there is no students";
+            return View(course);
         }
 
         //public async Task<IActionResult> DeleteDepartment()

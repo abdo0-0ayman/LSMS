@@ -52,9 +52,14 @@ else if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == 
                         <span asp-validation-for="hours" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label asp-for="departmentId" class="control-label"><span class="required">* Department ID</span>:</label>
-                        <input asp-for="departmentId" class="form-control" />
-                        <span asp-validation-for="departmentId" class="text-danger"></span>
+                        <label for="departmentId"><span class="required">* Department ID</span>:</label>
+                        <select name="departmentid" class="form-control">
+                            <option value="">Select an Department</option>
+                            @foreach (var item in ViewBag.Departments as List<Department>)
+                            {
+                                <option value="@item.id">@item.name</option>
+                            }
+                        </select>
                     </div>
                     <div class="form-group">
                         <input type="submit" value="Create" class="btn btn-outline-success float-right" asp-action="CreateCourse" />

@@ -1,21 +1,21 @@
-﻿@model List<LSMS.Models.Student>
+﻿@model List<LSMS.Models.Course>
 
 @{
     ViewData["Title"] = "Student List";
 }
 
-<h2>Student List</h2>
-<h1>number of students : @Model.Count()</h1>
+<h2>Courses List</h2>
+<h1>number of courses : @Model.Count()</h1>
 <div class="row mt-3">
     <div class="col-4">
-        <a class="btn btn-primary btn-sm w-50" asp-action="CreateStudent">Add new Student</a>
+        <a class="btn btn-primary btn-sm w-50" asp-action="CreateCourse">Add new Course</a>
     </div>
 </div>
 <table class="table">
     <thead>
         <tr>
-            <th>Student ID</th>
-            <th>Student Name</th>
+            <th>Course ID</th>
+            <th>Course Name</th>
             <th>Department Name</th>
         </tr>
     </thead>
@@ -23,7 +23,7 @@
         @foreach (var student in Model)
         {
             <tr>
-                <td>@student.SSN</td>
+                <td>@student.id </td>
                 <td>@student.name</td>
                 <td>@student.department.name</td>
             </tr>
