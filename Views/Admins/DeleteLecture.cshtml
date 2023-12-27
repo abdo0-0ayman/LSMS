@@ -1,0 +1,36 @@
+﻿@model Lecture
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "Lecture not found.")
+{
+    <div class="alert alert-danger" role="alert">
+        There is no Lecture with this id.
+    </div>
+}
+
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Delete Lecture</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Delete">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group text-center">
+                        <img SSN="ProfilePicturePreview" class="border-info rounded-circle" style="max-width: 150px" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="id" class="control-label"></label>
+                        <input asp-for="id" class="form-control" />
+                        <span asp-validation-for="id" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Delete" class="btn btn-danger float-right" asp-action="DeleteLecture" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

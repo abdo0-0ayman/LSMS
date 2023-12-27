@@ -1,0 +1,36 @@
+﻿@model Professor
+
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage) && ViewBag.ErrorMessage == "Professor not found.")
+{
+    <div class="alert alert-danger" role="alert">
+        There is no Professor has this SSN.
+    </div>
+}
+
+<div class="row text">
+    <div class="col-md-8 offset-2">
+        <p>
+            <h1>Delete Professor</h1>
+        </p>
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Delete">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="form-group text-center">
+                        <img id="ProfilePicturePreview" class="border-info rounded-circle" style="max-width: 150px" />
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="SSN" class="control-label"></label>
+                        <input asp-for="SSN" class="form-control" />
+                        <span asp-validation-for="SSN" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="submit" value="Delete" class="btn btn-danger float-right" asp-action="DeleteProfessor" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

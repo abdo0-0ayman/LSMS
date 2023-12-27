@@ -667,150 +667,161 @@ namespace LSMS.Controllers
             return View(course);
         }
 
-        //public async Task<IActionResult> DeleteDepartment()
-        //{
-        //    try
-        //    {
-        //        // Retrieve all records from the table
-        //        var recordsToDelete = dbContext.Departments.ToList();
-
-        //        // Remove all records from the DbSet
-        //        dbContext.Departments.RemoveRange(recordsToDelete);
-
-        //        // Save changes to the database
-        //        dbContext.SaveChanges();
-
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions (log, display an error message, etc.)
-        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
-        //    }
-        //}
+        public IActionResult DeleteHall()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteHall(string id)
+        {
+            var hall = dbContext.Halls.FirstOrDefault(h => h.id == id);
 
 
-        //public async Task<IActionResult> DeleteStudent()
-        //{
-        //    try
-        //    {
-        //        // Retrieve all records from the table
-        //        var recordsToDelete = dbContext.Students.ToList();
+            if (hall == null)
+            {
+                ViewBag.ErrorMessage = "Hall not found."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
 
-        //        // Remove all records from the DbSet
-        //        dbContext.Students.RemoveRange(recordsToDelete);
+            dbContext.Remove(hall);
+            dbContext.SaveChanges();
 
-        //        // Save changes to the database
-        //        dbContext.SaveChanges();
+            return RedirectToAction("DeleteHall"); // Redirect to the same action
+        }
 
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions (log, display an error message, etc.)
-        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
-        //    }
+        public IActionResult DeleteDepartment()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteDepartment(string id)
+        {
+            var dep = dbContext.Departments.FirstOrDefault(d => d.id == id);
 
-        //}
-        //public async Task<IActionResult> DeleteProfessor()
-        //{
-        //    try
-        //    {
-        //        // Retrieve all records from the table
-        //        var recordsToDelete = dbContext.Professors.ToList();
 
-        //        // Remove all records from the DbSet
-        //        dbContext.Professors.RemoveRange(recordsToDelete);
+            if (dep == null)
+            {
+                ViewBag.ErrorMessage = "Department not found."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
 
-        //        // Save changes to the database
-        //        dbContext.SaveChanges();
+            if (dbContext.Courses.Where(d => d.departmentId == id).ToList().Count() > 0
+                || dbContext.Students.Where(d => d.departmentId == id).ToList().Count() > 0
+                || dbContext.Professors.Where(d => d.departmentId == id).ToList().Count() > 0)
+            {
+                ViewBag.ErrorMessage = "can't delete department."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
+            dbContext.Remove(dep);
+            dbContext.SaveChanges();
 
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions (log, display an error message, etc.)
-        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
-        //    }
+            return RedirectToAction("DeleteDepartment"); // Redirect to the same action
+        }
 
-        //}
-        //public async Task<IActionResult> DeleteHall()
-        //{
-        //    try
-        //    {
-        //        // Retrieve all records from the table
-        //        var recordsToDelete = dbContext.Halls.ToList();
 
-        //        // Remove all records from the DbSet
-        //        dbContext.Halls.RemoveRange(recordsToDelete);
+        public IActionResult DeleteStudent()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteStudent(string SSN)
+        {
+            var student = dbContext.Students.FirstOrDefault(s => s.SSN == SSN);
 
-        //        // Save changes to the database
-        //        dbContext.SaveChanges();
 
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions (log, display an error message, etc.)
-        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
-        //    }
+            if (student == null)
+            {
+                ViewBag.ErrorMessage = "Student not found."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
+            var enrollement = dbContext.Enrollments.Where(e => e.studentSSN == SSN).ToList();
 
-        //}
-        //public async Task<IActionResult> DeleteCourse()
-        //{
-        //    try
-        //    {
-        //        // Retrieve all records from the table
-        //        var recordsToDelete = dbContext.Courses.ToList();
+            dbContext.Enrollments.RemoveRange(enrollement);
+            dbContext.Remove(student);
+            dbContext.SaveChanges();
 
-        //        // Remove all records from the DbSet
-        //        dbContext.Courses.RemoveRange(recordsToDelete);
+            return RedirectToAction("DeleteStudent"); // Redirect to the same action
+        }
 
-        //        // Save changes to the database
-        //        dbContext.SaveChanges();
+        public IActionResult DeleteCourse()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCourse(string id)
+        {
+            var course = dbContext.Courses.FirstOrDefault(c => c.id == id);
 
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions (log, display an error message, etc.)
-        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
-        //    }
 
-        //}
-        //public async Task<IActionResult> DeleteLecture()
-        //{
+            if (course == null)
+            {
+                ViewBag.ErrorMessage = "Course not found."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
+            if (dbContext.Lectures.Where(c => c.courseId == id).ToList().Count() > 0)
+            {
+                ViewBag.ErrorMessage = "can't delete course."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
 
-        //    try
-        //    {
-        //        // Retrieve all records from the table
-        //        var recordsToDelete = dbContext.Lectures.ToList();
+            dbContext.Remove(course);
+            dbContext.SaveChanges();
 
-        //        // Remove all records from the DbSet
-        //        dbContext.Lectures.RemoveRange(recordsToDelete);
+            return RedirectToAction("DeleteCourse"); // Redirect to the same action
+        }
 
-        //        recordsToDelete = dbContext.Lectures.ToList();
+        public IActionResult DeleteProfessor()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteProfessor(string SSN)
+        {
+            var professor = dbContext.Professors.FirstOrDefault(p => p.SSN == SSN);
 
-        //        // Remove all records from the DbSet
-        //        dbContext.Lectures.RemoveRange(recordsToDelete);
 
-        //        // Save changes to the database
-        //        dbContext.SaveChanges();
+            if (professor == null)
+            {
+                ViewBag.ErrorMessage = "Professor not found."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
 
-        //        return RedirectToAction("Index", "Home"); // Redirect to a success page or any other page
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Handle exceptions (log, display an error message, etc.)
-        //        return RedirectToAction("Error", "Home"); // Redirect to an error page
-        //    }
+            if (dbContext.Lectures.Where(p => p.professorSSN == SSN).ToList().Count() > 0)
+            {
+                ViewBag.ErrorMessage = "can't delete professor."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
+            dbContext.Remove(professor);
+            dbContext.SaveChanges();
 
-        //}
-        //public async Task<IActionResult> Reset()
-        //{
-        //    return View();
-        //}
+            return RedirectToAction("DeleteProfessor"); // Redirect to the same action
 
+        }
+
+        public IActionResult DeleteLecture()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteLecture(string id)
+        {
+            var lecture = dbContext.Lectures.FirstOrDefault(l => l.id == id);
+
+            if (lecture == null)
+            {
+                ViewBag.ErrorMessage = "Lecture not found."; // Store error message in ViewBag
+                return View(); // Render the same view
+            }
+
+            var enrollement = dbContext.Enrollments.Where(e => e.lectureId == id).ToList();
+
+            dbContext.Enrollments.RemoveRange(enrollement);
+
+            dbContext.Remove(lecture);
+            dbContext.SaveChanges();
+
+            return RedirectToAction("DeleteLecture"); // Redirect to the same actio
+        }
 
     }
 }
